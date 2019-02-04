@@ -2,22 +2,25 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { AuthUserContext } from '../Session';
 
-import Navbar from './styles';
+import {Navbar, Sidebar} from './styles';
+import {HamburgerMenu} from '../../styles/Icons';
 
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 
-const Navigation = () => (
-  <Navbar>
-    <div>
-      <AuthUserContext.Consumer>
-        {authUser =>
-          authUser ? <NavigationAuth /> : <NavigationNonAuth />
-        }
-      </AuthUserContext.Consumer>
-    </div>
-  </Navbar>
- );
+const Navigation = (props) => {
+
+  return (
+    <Navbar>
+      <button name="menu" onClick={props.sidebarToggleClickHandler}><HamburgerMenu/></button>
+      <Sidebar open={props.open}>
+        <AuthUserContext.Consumer>
+          {authUser => authUser ? <NavigationAuth /> : <NavigationNonAuth />}
+        </AuthUserContext.Consumer>
+      </Sidebar>
+    </Navbar>
+  );
+};
 
 const NavigationAuth = () => (
  <ul>
