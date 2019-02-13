@@ -22,26 +22,21 @@ class App extends Component {
 
   sidebarToggleClickHandler = (e) => {
       e.preventDefault();
-      this.setState(prevState => {
-        return {open: !prevState.open};
-    });
-  };
-
-  sidebarClose = () => {
-      this.setState(prevState => {
-        return {open: false};
-    });
+      this.setState(prevState => ({open: !prevState.open }));
   };
 
   render() {
     const { open } = this.state;
-
+    console.log(open);
     return (
        <Router>
          <div>
            <GlobalStyle />
-           <Navigation sidebarToggleClickHandler={this.sidebarToggleClickHandler} open={open}/>
-           <div onClick={this.sidebarClose}>
+           <Navigation
+             sidebarToggleClickHandler={this.sidebarToggleClickHandler}
+             open={open}
+           />
+           <div >
              <Route exact path={ROUTES.LANDING} component={LandingPage} />
              <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
              <Route path={ROUTES.SIGN_IN} component={SignInPage} />
