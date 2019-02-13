@@ -3,8 +3,9 @@ import { createGlobalStyle } from 'styled-components';
 const GlobalStyle = createGlobalStyle`
 
   :root {
-    --menu-color: hsl(154, 100%, 49%);
-    --aside-color: hsl(223, 7%, 21%);
+    --menu-color: hsl(231, 74%, 11%);
+    --nav-text-color: hsl(151, 89%, 49%);
+
     --search-field: hsl(220, 7%, 17%);
     --highlight-color: hsl(220, 7%, 27%);
     --toolbar-color: hsl(0, 0%, 98%);
@@ -21,9 +22,8 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    background: #00334d;
+    background: #e0f8f7;
     color: white;
-    font-size: 18px;
   }
 
   * {
@@ -39,6 +39,7 @@ const GlobalStyle = createGlobalStyle`
 
   a {
     text-decoration: none;
+    color: white;
   }
 `;
 
