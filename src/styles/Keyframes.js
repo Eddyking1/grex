@@ -7,14 +7,12 @@ export const KeyFrameSidebar = keyframes`
   }
   100% {
     opacity: 1;
-    width: 25%;
   }
 `;
 
 export const KeyFrameSidebarIn = keyframes`
   0% {
     opacity: 1;
-    width: 25%;
   }
 
   95% {

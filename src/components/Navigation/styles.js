@@ -23,7 +23,7 @@ export const Navbar = styled.div`
   }
 `;
 
-export const Overlay = styled.div`
+export const Overlay = styled.aside`
   min-height: 100vh;
   background-color: var(--menu-color);
   display: flex;
@@ -33,6 +33,11 @@ export const Overlay = styled.div`
   align-items: center;
   white-space: nowrap;
   overflow: hidden;
+  width: 25%;
+
+  @media (max-width: 1100px) {
+    width: 100%;
+  }
 
   ${props => props.open === false} {
     animation: ${ KeyFrameSidebar } .6s forwards;
@@ -100,7 +105,7 @@ export const Sidebar = styled.div`
   min-height: 100vh;
   top: 0;
   position: absolute;
-  background-color: rgba(0,0,0,.2);
+  background-color: rgba(7,14,49,.2);
 
   ${props => props.open === true} {
     animation: ${KeyFrameSidebarFade} .6s forwards;

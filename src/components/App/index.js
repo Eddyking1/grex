@@ -21,8 +21,11 @@ class App extends Component {
   };
 
   sidebarToggleClickHandler = (e) => {
-      e.preventDefault();
+    e.preventDefault();
+    console.log(e.target.tagName);
+    if(e.target.tagName !== "UL") {
       this.setState(prevState => ({open: !prevState.open }));
+    }
   };
 
   render() {

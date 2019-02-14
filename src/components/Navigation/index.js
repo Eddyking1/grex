@@ -26,18 +26,14 @@ const Navigation = (props) => {
 
 const NavigationAuth = () => (
  <ul>
-   <img src={require("../../assets/ball-spotted.png")} alt="hej"/>
    <li>
-     <Link to={ROUTES.LANDING}>Landing</Link>
-   </li>
-   <li>
-     <Link to={ROUTES.HOME}>Home</Link>
+     <Link to={ROUTES.HOME}> <img src={require("../../assets/ball-spotted.png")} alt="app logo"/> </Link>
    </li>
    <li>
      <Link to={ROUTES.ACCOUNT}>Account</Link>
    </li>
    <li>
-    <Link to={ROUTES.ADMIN}>Admin</Link>
+    <Link to={ROUTES.ADMIN}>Dashboard</Link>
    </li>
    <SignOutButton />
  </ul>
@@ -45,9 +41,8 @@ const NavigationAuth = () => (
 
 const NavigationNonAuth = () => (
  <ul>
-   <img src={require("../../assets/ball-spotted.png")} alt="hej"/>
    <li>
-     <Link to={ROUTES.LANDING}>Landing</Link>
+     <Link to={ROUTES.LANDING}> <img src={require("../../assets/ball-spotted.png")} alt="app logo"/> </Link>
    </li>
    <li>
      <Link to={ROUTES.SIGN_IN}>Sign In</Link>
