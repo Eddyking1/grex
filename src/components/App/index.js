@@ -21,13 +21,15 @@ class App extends Component {
   };
 
   sidebarToggleClickHandler = (e) => {
-      e.preventDefault();
+    e.preventDefault();
+    if(e.target.tagName !== "UL") {
       this.setState(prevState => ({open: !prevState.open }));
+    }
   };
 
   render() {
     const { open } = this.state;
-    console.log(open);
+
     return (
        <Router>
          <div>
@@ -48,7 +50,6 @@ class App extends Component {
              <Route path={ROUTES.ACCOUNT} component={AccountPage} />
              <Route path={ROUTES.ADMIN} component={AdminPage} />
            </div>
-
          </div>
        </Router>
     );

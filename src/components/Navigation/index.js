@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { AuthUserContext } from '../Session';
 
-import {Navbar, Sidebar, Overlay} from './styles';
+import {Navbar, Sidebar, Overlay, NavigationExit} from './styles';
 import {HamburgerMenu} from '../../styles/Icons';
+import {NavCross} from '../../styles/Icons';
 
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
@@ -26,18 +27,18 @@ const Navigation = (props) => {
 
 const NavigationAuth = () => (
  <ul>
-   <img src={require("../../assets/ball-spotted.png")} alt="hej"/>
+   <NavigationExit><NavCross/></NavigationExit>
    <li>
-     <Link to={ROUTES.LANDING}>Landing</Link>
+     <Link to={ROUTES.HOME}>
+       <img src={require("../../assets/ball-spotted.png")} alt="app logo"/>
+       <h3>PLAY</h3>
+     </Link>
    </li>
    <li>
-     <Link to={ROUTES.HOME}>Home</Link>
+    <Link to={ROUTES.ADMIN}>Dashboard</Link>
    </li>
    <li>
-     <Link to={ROUTES.ACCOUNT}>Account</Link>
-   </li>
-   <li>
-    <Link to={ROUTES.ADMIN}>Admin</Link>
+     <Link to={ROUTES.ACCOUNT}>My Account</Link>
    </li>
    <SignOutButton />
  </ul>
@@ -45,9 +46,9 @@ const NavigationAuth = () => (
 
 const NavigationNonAuth = () => (
  <ul>
-   <img src={require("../../assets/ball-spotted.png")} alt="hej"/>
+   <NavigationExit><NavCross/></NavigationExit>
    <li>
-     <Link to={ROUTES.LANDING}>Landing</Link>
+     <Link to={ROUTES.LANDING}> <img src={require("../../assets/ball-spotted.png")} alt="app logo"/> </Link>
    </li>
    <li>
      <Link to={ROUTES.SIGN_IN}>Sign In</Link>

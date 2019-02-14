@@ -23,7 +23,7 @@ export const Navbar = styled.div`
   }
 `;
 
-export const Overlay = styled.div`
+export const Overlay = styled.aside`
   min-height: 100vh;
   background-color: var(--menu-color);
   display: flex;
@@ -33,12 +33,17 @@ export const Overlay = styled.div`
   align-items: center;
   white-space: nowrap;
   overflow: hidden;
+  width: 25%;
 
-  ${props => props.open === false} {
+  @media (max-width: 1100px) {
+    width: 100%;
+  }
+
+  ${props => !props.open} {
     animation: ${ KeyFrameSidebar } .6s forwards;
   }
 
-  ${props => props.open === true} {
+  ${props => props.open} {
     animation: ${ KeyFrameSidebarIn } .6s forwards;
     pointer-events: none;
   }
@@ -52,6 +57,7 @@ export const Overlay = styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
+    position: relative;
 
     img {
       width: 110px;
@@ -61,6 +67,10 @@ export const Overlay = styled.div`
     li {
       width: 80%;
       min-width: 200px;
+
+      h3 {
+        color: white;
+      }
 
       a {
         display: block;
@@ -75,23 +85,23 @@ export const Overlay = styled.div`
           border-bottom: 2px solid var(--nav-text-color);
           transition: .4s;
           transform: scale(1.05);
-          color: var(--nav-text-color);
         }
       }
     }
+  }
+`;
 
-    button {
-      font-size: 2.5em;
-      color: #d8e6f7;
-      padding: 20px 0;
-      transition: .4s;
+export const NavigationExit = styled.button`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  transition: .4s;
+  margin: 0 0;
+  padding: 0 0;
 
-      :hover {
-        transition: .4s;
-        transform: scale(1.1);
-        color: var(--nav-text-color);
-      }
-    }
+  :hover {
+    transition: .4s;
+    transform: scale(1.1);
   }
 `;
 
@@ -100,7 +110,7 @@ export const Sidebar = styled.div`
   min-height: 100vh;
   top: 0;
   position: absolute;
-  background-color: rgba(0,0,0,.2);
+  background-color: rgba(7,14,49,.2);
 
   ${props => props.open === true} {
     animation: ${KeyFrameSidebarFade} .6s forwards;
