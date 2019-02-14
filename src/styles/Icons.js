@@ -10,6 +10,6 @@ export const HamburgerMenu = styled(Menu)`
 
 export const NavCross = styled(Cross)`
   color: var(--nav-text-color);
-  height: 3rem;
-  width: 3rem;
+  height: 2rem;
+  width: 2rem;
 `;

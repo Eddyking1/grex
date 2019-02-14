@@ -39,11 +39,11 @@ export const Overlay = styled.aside`
     width: 100%;
   }
 
-  ${props => props.open === false} {
+  ${props => !props.open} {
     animation: ${ KeyFrameSidebar } .6s forwards;
   }
 
-  ${props => props.open === true} {
+  ${props => props.open} {
     animation: ${ KeyFrameSidebarIn } .6s forwards;
     pointer-events: none;
   }
@@ -57,6 +57,7 @@ export const Overlay = styled.aside`
     justify-content: center;
     align-items: center;
     text-align: center;
+    position: relative;
 
     img {
       width: 110px;
@@ -66,6 +67,10 @@ export const Overlay = styled.aside`
     li {
       width: 80%;
       min-width: 200px;
+
+      h3 {
+        color: white;
+      }
 
       a {
         display: block;
@@ -80,23 +85,23 @@ export const Overlay = styled.aside`
           border-bottom: 2px solid var(--nav-text-color);
           transition: .4s;
           transform: scale(1.05);
-          color: var(--nav-text-color);
         }
       }
     }
+  }
+`;
 
-    button {
-      font-size: 2.5em;
-      color: #d8e6f7;
-      padding: 20px 0;
-      transition: .4s;
+export const NavigationExit = styled.button`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  transition: .4s;
+  margin: 0 0;
+  padding: 0 0;
 
-      :hover {
-        transition: .4s;
-        transform: scale(1.1);
-        color: var(--nav-text-color);
-      }
-    }
+  :hover {
+    transition: .4s;
+    transform: scale(1.1);
   }
 `;
 
