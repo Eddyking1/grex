@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { compose } from "recompose";
 import { withAuthorization } from "../Session";
 import { withFirebase } from "../Firebase";
+import Game from '../Game'
 
 class HomePage extends Component {
   constructor(props) {
@@ -30,6 +31,7 @@ class HomePage extends Component {
         <p>The Home Page is accessible by every signed in user.</p>
         ​
         <Messages users={this.state.users} />
+        <Game />
       </div>
     );
   }
