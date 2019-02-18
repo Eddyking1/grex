@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 import {Wrapper, GameMap} from './styles';
-import { AuthUserContext, withAuthorization } from '../Session';
 import { compose } from "recompose";
+import { AuthUserContext, withAuthorization } from '../Session';
 
 
 const mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -22,16 +22,13 @@ class Game extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
   }
 
-  componentDidMount() {
-    console.log(this.props);
-
-  }
 
   render() {
     return (
+    <AuthUserContext.Consumer>
+      {authUser => (
         <Wrapper>
           <GameMap center={mapCenter}
                zoom={zoomLevel}
@@ -43,14 +40,14 @@ class Game extends Component {
                <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                />
             <Marker position={testMark}>
-              <Popup>{}</Popup>
+              <Popup>dadw</Popup>
             </Marker>
           </GameMap>
         </Wrapper>
+      )}
+      </AuthUserContext.Consumer>
     )
   };
 }
 
-const condition = authUser => !!authUser;
-
-export default withAuthorization(condition)(Game);
+export default Game;
