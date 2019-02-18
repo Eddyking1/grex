@@ -13,6 +13,7 @@ export const Navbar = styled.div`
   align-items: center;
   font-size: 1rem;
   color: var(--nav-text-color);
+  z-index: 10000;
 
   button {
     background: none;
@@ -34,6 +35,7 @@ export const Overlay = styled.aside`
   white-space: nowrap;
   overflow: hidden;
   width: 25%;
+  z-index: 1000;
 
   @media (max-width: 1100px) {
     width: 100%;
