@@ -27,17 +27,15 @@ class HomePage extends Component {
   render() {
     return (
       <div>
-
-        <Game />
+      <h1>Home Page</h1>
+      <p>The Home Page is accessible by every signed in user.</p>
+      ​
+      <Messages users={this.state.users} />
+        <Gamee users={this.state.users}/>
       </div>
     );
   }
 }
-
-// <h1>Home Page</h1>
-// <p>The Home Page is accessible by every signed in user.</p>
-// ​
-// <Messages users={this.state.users} />
 
 class MessagesBase extends Component {
   constructor(props) {
@@ -68,7 +66,7 @@ class MessagesBase extends Component {
         if (messageObject) {
           const messageList = Object.keys(messageObject).map(key => ({
             ...messageObject[key],
-            uid: key
+            uid: key,
           }));
 
           this.setState({
@@ -144,7 +142,7 @@ class MessagesBase extends Component {
         )}
         ​{!messages && <div>There are no messages ...</div>}​
         <form onSubmit={event => this.onCreateMessage(event)}>
-          <input type="text" value={text} onChange={this.onChangeText} />
+          <input type="text" value={text} onChange={this.onChangeText}/>
           <button type="submit">Send</button>
         </form>
       </div>
@@ -231,6 +229,7 @@ class MessageItem extends Component {
 }
 
 const Messages = withFirebase(MessagesBase);
+const Gamee = withFirebase(Game);
 
 const condition = authUser => !!authUser;
 

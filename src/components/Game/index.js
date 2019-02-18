@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 import {Wrapper, GameMap} from './styles';
-import L from 'leaflet';
+import { AuthUserContext, withAuthorization } from '../Session';
+import { compose } from "recompose";
+
 
 const mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const mapCenter = [59.32, 18.06];
@@ -18,31 +20,37 @@ var testMark = [xCord, yCord];
 
 class Game extends Component {
 
-  state = {
+  constructor(props) {
+    super(props);
+    console.log(props);
   }
 
   componentDidMount() {
+    console.log(this.props);
+
   }
 
   render() {
     return (
-      <Wrapper>
-        <GameMap center={mapCenter}
-             zoom={zoomLevel}
-             maxZoom={15}
-             minZoom={9}
-        >
-        <TileLayer url={mapUrl}
-           attribution='&amp;copy
-           <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-           />
-        <Marker position={testMark}>
-          <Popup>A pretty CSS3 popup.<br />Easily customizable.</Popup>
-        </Marker>
-        </GameMap>
-      </Wrapper>
+        <Wrapper>
+          <GameMap center={mapCenter}
+               zoom={zoomLevel}
+               maxZoom={15}
+               minZoom={9}
+          >
+            <TileLayer url={mapUrl}
+               attribution='&amp;copy
+               <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+               />
+            <Marker position={testMark}>
+              <Popup>{}</Popup>
+            </Marker>
+          </GameMap>
+        </Wrapper>
     )
   };
 }
 
-export default Game;
+const condition = authUser => !!authUser;
+
+export default withAuthorization(condition)(Game);
