@@ -22,8 +22,16 @@ class Game extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      user: null,
+      users: null,
+      eggs: null,
+    }
   }
 
+  componentDidMount() {
+  }
 
   render() {
     return (
