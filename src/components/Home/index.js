@@ -1,20 +1,26 @@
-import React, { Component } from "react";
-import { compose } from "recompose";
-import { withAuthorization } from "../Session";
-import { withFirebase } from "../Firebase";
+import React, { Component } from 'react';
+import { compose } from 'recompose';
+import Game from '../Game';
+
+import {
+  AuthUserContext,
+  withAuthorization,
+} from '../Session';
+import { withFirebase } from '../Firebase';
 
 class HomePage extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      users: null
+      users: null,
     };
   }
 
   componentDidMount() {
-    this.props.firebase.users().on("value", snapshot => {
+    this.props.firebase.users().on('value', snapshot => {
       this.setState({
-        users: snapshot.val()
+        users: snapshot.val(),
       });
     });
   }
@@ -28,8 +34,9 @@ class HomePage extends Component {
       <div>
         <h1>Home Page</h1>
         <p>The Home Page is accessible by every signed in user.</p>
-        ​
+
         <Messages users={this.state.users} />
+        <Gamee users={this.state.users} />
       </div>
     );
   }
@@ -40,10 +47,10 @@ class MessagesBase extends Component {
     super(props);
 
     this.state = {
-      text: "",
+      text: '',
       loading: false,
       messages: [],
-      limit: 5
+      limit: 5,
     };
   }
 
@@ -56,20 +63,20 @@ class MessagesBase extends Component {
 
     this.props.firebase
       .messages()
-      .orderByChild("createdAt")
+      .orderByChild('createdAt')
       .limitToLast(this.state.limit)
-      .on("value", snapshot => {
+      .on('value', snapshot => {
         const messageObject = snapshot.val();
 
         if (messageObject) {
           const messageList = Object.keys(messageObject).map(key => ({
             ...messageObject[key],
-            uid: key
+            uid: key,
           }));
 
           this.setState({
             messages: messageList,
-            loading: false
+            loading: false,
           });
         } else {
           this.setState({ messages: null, loading: false });
@@ -89,10 +96,10 @@ class MessagesBase extends Component {
     this.props.firebase.messages().push({
       text: this.state.text,
       userId: authUser.uid,
-      createdAt: this.props.firebase.serverValue.TIMESTAMP
+      createdAt: this.props.firebase.serverValue.TIMESTAMP,
     });
 
-    this.setState({ text: "" });
+    this.setState({ text: '' });
 
     event.preventDefault();
   };
@@ -101,7 +108,7 @@ class MessagesBase extends Component {
     this.props.firebase.message(message.uid).set({
       ...message,
       text,
-      editedAt: this.props.firebase.serverValue.TIMESTAMP
+      editedAt: this.props.firebase.serverValue.TIMESTAMP,
     });
   };
 
@@ -112,7 +119,7 @@ class MessagesBase extends Component {
   onNextPage = () => {
     this.setState(
       state => ({ limit: state.limit + 5 }),
-      this.onListenForMessages
+      this.onListenForMessages,
     );
   };
 
@@ -121,34 +128,56 @@ class MessagesBase extends Component {
     const { text, messages, loading } = this.state;
 
     return (
-      <div>
-        {!loading && messages && (
-          <button type="button" onClick={this.onNextPage}>
-            More
-          </button>
+      <AuthUserContext.Consumer>
+        {authUser => (
+          <div>
+            {!loading && messages && (
+              <button type="button" onClick={this.onNextPage}>
+                More
+              </button>
+            )}
+
+            {loading && <div>Loading ...</div>}
+
+            {messages && (
+              <MessageList
+                messages={messages.map(message => ({
+                  ...message,
+                  user: users
+                    ? users[message.userId]
+                    : { userId: message.userId },
+                }))}
+                onEditMessage={this.onEditMessage}
+                onRemoveMessage={this.onRemoveMessage}
+              />
+            )}
+
+            {!messages && <div>There are no messages ...</div>}
+
+            <form
+              onSubmit={event =>
+                this.onCreateMessage(event, authUser)
+              }
+            >
+              <input
+                type="text"
+                value={text}
+                onChange={this.onChangeText}
+              />
+              <button type="submit">Send</button>
+            </form>
+          </div>
         )}
-        ​{loading && <div>Loading ...</div>}​
-        {messages && (
-          <MessageList
-            messages={messages.map(message => ({
-              ...message,
-              user: users ? users[message.userId] : { userId: message.userId }
-            }))}
-            onEditMessage={this.onEditMessage}
-            onRemoveMessage={this.onRemoveMessage}
-          />
-        )}
-        ​{!messages && <div>There are no messages ...</div>}​
-        <form onSubmit={event => this.onCreateMessage(event)}>
-          <input type="text" value={text} onChange={this.onChangeText} />
-          <button type="submit">Send</button>
-        </form>
-      </div>
+      </AuthUserContext.Consumer>
     );
   }
 }
 
-const MessageList = ({ messages, onEditMessage, onRemoveMessage }) => (
+const MessageList = ({
+  messages,
+  onEditMessage,
+  onRemoveMessage,
+}) => (
   <ul>
     {messages.map(message => (
       <MessageItem
@@ -167,14 +196,14 @@ class MessageItem extends Component {
 
     this.state = {
       editMode: false,
-      editText: this.props.message.text
+      editText: this.props.message.text,
     };
   }
 
   onToggleEditMode = () => {
     this.setState(state => ({
       editMode: !state.editMode,
-      editText: this.props.message.text
+      editText: this.props.message.text,
     }));
   };
 
@@ -202,11 +231,13 @@ class MessageItem extends Component {
           />
         ) : (
           <span>
-            <strong>{message.user.username || message.user.userId}</strong>{" "}
+            <strong>
+              {message.user.username || message.user.userId}
+            </strong>{' '}
             {message.text} {message.editedAt && <span>(Edited)</span>}
           </span>
         )}
-        ​
+
         {editMode ? (
           <span>
             <button onClick={this.onSaveEditText}>Save</button>
@@ -215,9 +246,12 @@ class MessageItem extends Component {
         ) : (
           <button onClick={this.onToggleEditMode}>Edit</button>
         )}
-        ​
+
         {!editMode && (
-          <button type="button" onClick={() => onRemoveMessage(message.uid)}>
+          <button
+            type="button"
+            onClick={() => onRemoveMessage(message.uid)}
+          >
             Delete
           </button>
         )}
@@ -225,12 +259,13 @@ class MessageItem extends Component {
     );
   }
 }
-
 const Messages = withFirebase(MessagesBase);
+const Gamee = withFirebase(Game);
+
 
 const condition = authUser => !!authUser;
 
 export default compose(
   withFirebase,
-  withAuthorization(condition)
+  withAuthorization(condition),
 )(HomePage);

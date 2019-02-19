@@ -16,6 +16,7 @@ const withAuthorization = condition => Component => {
          }
        },
      );
+
    }
 
    componentWillUnmount() {
