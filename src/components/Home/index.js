@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { compose } from 'recompose';
-import Game from '../Game';
+/* import Game from '../Game'; */
 
 import {
   AuthUserContext,
@@ -36,7 +36,8 @@ class HomePage extends Component {
         <p>The Home Page is accessible by every signed in user.</p>
 
         <Messages users={this.state.users} />
-        <Gamee users={this.state.users} />
+        {/* <Gamee users={this.state.users} />
+        <Game/> */}
       </div>
     );
   }
@@ -222,7 +223,9 @@ class MessageItem extends Component {
     const { editMode, editText } = this.state;
 
     return (
-      <li>
+
+      <div></div>
+/*       <li>
         {editMode ? (
           <input
             type="text"
@@ -255,12 +258,14 @@ class MessageItem extends Component {
             Delete
           </button>
         )}
-      </li>
+      </li> */
     );
   }
 }
 const Messages = withFirebase(MessagesBase);
-const Gamee = withFirebase(Game);
+{/* const Gamee = withFirebase(Game);
+ */}
+const Game = withFirebase(Game);
 
 
 const condition = authUser => !!authUser;
@@ -269,3 +274,4 @@ export default compose(
   withFirebase,
   withAuthorization(condition),
 )(HomePage);
+

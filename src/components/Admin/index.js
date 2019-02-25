@@ -1,6 +1,54 @@
 import React, { Component } from 'react';
-
+import { withFirebase } from '../Firebase';
 import { withAuthorization } from '../Session';
+import styled from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
+
+
+
+
+const AdminStyle = styled.div`
+  overflow: none;
+  display:flex;
+  justify-content:center;
+  text-aling:center;
+  padding:20px;
+  background: hsl(225, 70%, 5%);
+  height:100vh;  
+`;
+
+const AdminText = styled.div`
+  display:flex;
+  width:50vw;
+  padding:10px;
+  border: 2px solid;
+  flex-direction:column;
+`;
+
+const Players = styled.div`
+  display:flex;
+  flex-direction:row;
+
+  li {
+    display:flex;
+    justify-content:flex-end;
+    margin:0 auto;
+  }
+`;
+
+const Head = styled.div`
+  display:flex;
+  flex-direction:row;
+  padding-bottom:10px;
+  h1 {
+    justify-content:center;
+    margin:0 auto;
+    text-decoration:underline;
+  }
+`;
+
+
+
 
 class AdminPage extends Component {
   constructor(props) {
@@ -11,6 +59,9 @@ class AdminPage extends Component {
       users: [],
     };
   }
+
+
+
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -23,6 +74,8 @@ class AdminPage extends Component {
         uid: key,
       }));
 
+
+
       this.setState({
         users: usersList,
         loading: false,
@@ -31,38 +84,52 @@ class AdminPage extends Component {
   }
 
   componentWillUnmount() {
-  this.props.firebase.users().off();
+    this.props.firebase.users().off();
   }
 
   render() {
     const { users, loading } = this.state;
 
+
+
     return (
-      <div>
-        <h1>Admin</h1>
+      <AdminStyle>
         {loading && <div>Loading ...</div>}
         <UserList users={users} />
-      </div>
+      </AdminStyle>
     );
   }
 }
 
+
 const UserList = ({ users }) => (
-  <ul>
+  <div>
+  <Head>
+      <h1>Leaderboard</h1>
+</Head>
+    <Players> 
+    <li>Total players: {users.length}</li>
+     <li>Players online: {users.length}</li>
+   </Players>
     {users.map(user => (
-      <li key={user.uid}>
-        <span>
-          <strong>ID:</strong> {user.uid}
-        </span>
-        <span>
-          <strong>E-Mail:</strong> {user.email}
-        </span>
-        <span>
-          <strong>Username:</strong> {user.username}
-        </span>
-      </li>
+      <AdminText >
+        <li key={user.uid}>
+
+          <li>
+            <strong>Username:</strong> {user.username}
+          </li>
+          <li>
+            <strong>Highscore:</strong> {user.highscore ? user.highscore : "0" }
+          </li>
+
+          <li>
+            <strong>Distance traveled:</strong> {user.traveled ? user.traveled : "0"} <strong>Meters</strong>
+          </li>
+
+        </li>
+      </AdminText>
     ))}
-  </ul>
+  </div>
 );
 
 const condition = authUser => !!authUser;
