@@ -4,10 +4,10 @@ import { compose } from 'recompose';
 
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import { SignInUp } from "./styles";
 
 const SignUpPage = () => (
   <div>
-    <h1>Sign up</h1>
     <SignUpForm />
   </div>
 );
@@ -70,7 +70,10 @@ class SignUpFormBase extends Component {
       username === '';
 
     return(
+      <SignInUp>
       <form onSubmit={this.onSubmit}>
+      <h1> Sign up here!</h1>
+
         <input name="username"
           value={username}
           onChange={this.onChange}
@@ -99,6 +102,7 @@ class SignUpFormBase extends Component {
 
         {error && <p>{error.message}</p>}
       </form>
+      </SignInUp>
     );
   }
 }

@@ -6,13 +6,14 @@ import { SignUpLink } from '../SignUp';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 import { PasswordForgetLink } from '../PasswordForget';
+import { Sign } from 'styled-icons/fa-solid';
+import { SignInUp } from "./styles";
+
 
 const SignInPage = () => (
   <div>
-    <h1>SignIn</h1>
     <SignInForm />
-    <PasswordForgetLink />
-    <SignUpLink />
+
   </div>
  );
 
@@ -55,7 +56,9 @@ const SignInPage = () => (
     const isInvalid = password === '' || email === '';
  
     return (
+      <SignInUp>
       <form onSubmit={this.onSubmit}>
+      <h1>Sign in here!</h1>
         <input
           name="email"
           value={email}
@@ -71,11 +74,15 @@ const SignInPage = () => (
           placeholder="Password"
         />
         <button disabled={isInvalid} type="submit">
-          Sign In
+        Sign in
         </button>
  
         {error && <p>{error.message}</p>}
+        <PasswordForgetLink />
+         <SignUpLink />
       </form>
+      
+      </SignInUp>
     );
   }
  }
