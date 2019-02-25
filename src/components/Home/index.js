@@ -265,6 +265,8 @@ class MessageItem extends Component {
 const Messages = withFirebase(MessagesBase);
 {/* const Gamee = withFirebase(Game);
  */}
+const Game = withFirebase(Game);
+
 
 const condition = authUser => !!authUser;
 
@@ -272,3 +274,4 @@ export default compose(
   withFirebase,
   withAuthorization(condition),
 )(HomePage);
+
