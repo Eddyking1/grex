@@ -108,25 +108,25 @@ const UserList = ({ users }) => (
       <h1>Leaderboard</h1>
 </Head>
     <Players> 
-    <li>Total players: {users.length}</li>
-     <li>Players online: {users.length}</li>
+    <p>Total players: {users.length}</p>
+     <p>Players online: {users.online ? users.online : "0"}</p>
    </Players>
     {users.map(user => (
       <AdminText >
-        <li key={user.uid}>
+        <p key={user.uid}>
 
-          <li>
+          <p>
             <strong>Username:</strong> {user.username}
-          </li>
-          <li>
+          </p>
+          <p>
             <strong>Highscore:</strong> {user.highscore ? user.highscore : "0" }
-          </li>
+          </p>
 
-          <li>
+          <p>
             <strong>Distance traveled:</strong> {user.traveled ? user.traveled : "0"} <strong>Meters</strong>
-          </li>
+          </p>
 
-        </li>
+        </p>
       </AdminText>
     ))}
   </div>
