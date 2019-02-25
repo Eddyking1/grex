@@ -3,15 +3,31 @@ import {Map} from 'react-leaflet';
 
 export const Wrapper = styled.div`
   width: 100%;
-  min-height: 100vh;
+  height: 70vh;
   display: flex;
-  align-content: flex-start;
-  align-items: flex-start;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
   justify-content: center;
   overflow: hidden;
+  font-size: 1rem;
+
+  button {
+    background: var(--menu-color);
+    width: 80%;
+    font-size: 1.5em;
+    padding: .8em;
+    margin: .5em 0;
+    border: .1em solid var(--nav-text-color);
+    border-radius: 5px;
+    color: var(--nav-text-color);
+    outline: none;
+    transition: .4s;
+    cursor: pointer;
+  }
 `;
 
 export const GameMap = styled(Map)`
-  height: calc(100vh - 100px);
+  height: 100%;
   width: 100%;
 `;
