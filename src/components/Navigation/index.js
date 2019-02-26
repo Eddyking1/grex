@@ -9,18 +9,17 @@ import {NavCross} from '../../styles/Icons';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 
-const Navigation = (props) => {
-
+const Navigation = ({sidebarToggleClickHandler, open}) => {
   return (
     <Navbar>
-      <button name="menu" onClick={props.sidebarToggleClickHandler}><HamburgerMenu/></button>
-      <Sidebar onClick={props.sidebarToggleClickHandler} open={props.open}>
-        <Overlay open={props.open}>
-          <AuthUserContext.Consumer>
-            {authUser => authUser ? <NavigationAuth /> : <NavigationNonAuth />}
-          </AuthUserContext.Consumer>
-        </Overlay>
-      </Sidebar>
+      <button name="menu" onClick={sidebarToggleClickHandler}><HamburgerMenu/></button>
+        <Sidebar onClick={sidebarToggleClickHandler} open={open}>
+          <Overlay open={open}>
+            <AuthUserContext.Consumer>
+              {authUser => authUser ? <NavigationAuth /> : <NavigationNonAuth />}
+            </AuthUserContext.Consumer>
+          </Overlay>
+        </Sidebar>
     </Navbar>
   );
 };

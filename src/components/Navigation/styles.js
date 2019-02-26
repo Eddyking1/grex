@@ -3,7 +3,7 @@ import {KeyFrameSidebar, KeyFrameSidebarIn, KeyFrameSidebarFade} from '../../sty
 
 export const Navbar = styled.div`
   background: var(--menu-color);
-  height: 100px;
+  height: 60px;
   border: none;
   position: sticky;
   top: 0;

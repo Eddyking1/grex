@@ -1,63 +1,6 @@
 import React, { Component } from 'react';
-import { compose } from 'recompose';
-<<<<<<< HEAD
-/* import Game from '../Game'; */
+import {Chat, ChatList} from './styles';
 
-=======
-import Game from '../Game';
-import MessagesBase from '../Chat'
->>>>>>> Possible to render users on map based on location
-import {
-  withAuthorization,
-} from '../Session';
-import { withFirebase } from '../Firebase';
-
-class HomePage extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      users: null,
-      loading: false,
-    };
-  }
-
-  componentDidMount() {
-    this.setState({loading: true});
-
-    this.props.firebase.users().on("value", snapshot => {
-      this.setState({
-        users: snapshot.val(),
-        loading: false,
-      });
-    });
-  }
-
-  componentWillUnmount() {
-    this.props.firebase.users().off();
-  }
-
-  render() {
-    return (
-      <div>
-<<<<<<< HEAD
-        <h1>Home Page</h1>
-        <p>The Home Page is accessible by every signed in user.</p>
-
-        <Messages users={this.state.users} />
-        {/* <Gamee users={this.state.users} />
-        <Game/> */}
-=======
-        { this.state.users && this.props.authUser ? <div>
-          <GameComponent userId={this.props.authUser.uid} />
-          <Messages users={this.state.users} authUser={this.props.authUser.uid} /> </div>: <h1>Website is loading...</h1> }
->>>>>>> Possible to render users on map based on location
-      </div>
-    );
-  }
-}
-
-<<<<<<< HEAD
 class MessagesBase extends Component {
   constructor(props) {
     super(props);
@@ -111,7 +54,7 @@ class MessagesBase extends Component {
   onCreateMessage = (event, authUser) => {
     this.props.firebase.messages().push({
       text: this.state.text,
-      userId: authUser.uid,
+      userId: authUser,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
     });
 
@@ -140,13 +83,11 @@ class MessagesBase extends Component {
   };
 
   render() {
-    const { users } = this.props;
+    const { users, authUser } = this.props;
     const { text, messages, loading } = this.state;
-
     return (
-      <AuthUserContext.Consumer>
-        {authUser => (
-          <div>
+          <Chat>
+            <h2>Egg Chat</h2>
             {!loading && messages && (
               <button type="button" onClick={this.onNextPage}>
                 More
@@ -182,9 +123,7 @@ class MessagesBase extends Component {
               />
               <button type="submit">Send</button>
             </form>
-          </div>
-        )}
-      </AuthUserContext.Consumer>
+          </Chat>
     );
   }
 }
@@ -194,7 +133,7 @@ const MessageList = ({
   onEditMessage,
   onRemoveMessage,
 }) => (
-  <ul>
+  <ChatList>
     {messages.map(message => (
       <MessageItem
         key={message.uid}
@@ -203,7 +142,7 @@ const MessageList = ({
         onRemoveMessage={onRemoveMessage}
       />
     ))}
-  </ul>
+  </ChatList>
 );
 
 class MessageItem extends Component {
@@ -238,60 +177,44 @@ class MessageItem extends Component {
     const { editMode, editText } = this.state;
 
     return (
-
       <div></div>
-/*       <li>
-        {editMode ? (
-          <input
-            type="text"
-            value={editText}
-            onChange={this.onChangeEditText}
-          />
-        ) : (
-          <span>
-            <strong>
-              {message.user.username || message.user.userId}
-            </strong>{' '}
-            {message.text} {message.editedAt && <span>(Edited)</span>}
-          </span>
-        )}
-
-        {editMode ? (
-          <span>
-            <button onClick={this.onSaveEditText}>Save</button>
-            <button onClick={this.onToggleEditMode}>Reset</button>
-          </span>
-        ) : (
-          <button onClick={this.onToggleEditMode}>Edit</button>
-        )}
-
-        {!editMode && (
-          <button
-            type="button"
-            onClick={() => onRemoveMessage(message.uid)}
-          >
-            Delete
-          </button>
-        )}
-      </li> */
     );
   }
 }
-const Messages = withFirebase(MessagesBase);
-{/* const Gamee = withFirebase(Game);
- */}
-const Game = withFirebase(Game);
 
-=======
+// <li>
+//   {editMode ? (
+//     <input
+//       type="text"
+//       value={editText}
+//       onChange={this.onChangeEditText}
+//     />
+//   ) : (
+//     <span>
+//       <strong>
+//         {message.user.username || message.user.userId}
+//       </strong>{' '}
+//       {message.text} {message.editedAt && <span>(Edited)</span>}
+//     </span>
+//   )}
+//
+//   {editMode ? (
+//     <span>
+//       <button onClick={this.onSaveEditText}>Save</button>
+//       <button onClick={this.onToggleEditMode}>Reset</button>
+//     </span>
+//   ) : (
+//     <button onClick={this.onToggleEditMode}>Edit</button>
+//   )}
+//
+//   {!editMode && (
+//     <button
+//       type="button"
+//       onClick={() => onRemoveMessage(message.uid)}
+//     >
+//       Delete
+//     </button>
+//   )}
+// </li>
 
-const Messages = withFirebase(MessagesBase);
-const GameComponent = withFirebase(Game);
->>>>>>> Possible to render users on map based on location
-
-const condition = authUser => !!authUser;
-
-export default compose(
-  withFirebase,
-  withAuthorization(condition),
-)(HomePage);
-
+export default MessagesBase;

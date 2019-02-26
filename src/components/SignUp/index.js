@@ -15,8 +15,10 @@ const SignUpPage = () => (
 const INITIAL_STATE = {
   username: '',
   email: '',
+  position: {latitude: "59.32", longitude: "18.06"},
   passwordOne: '',
   passwordTwo: '',
+  online: false,
   error: null,
 };
 
@@ -27,7 +29,7 @@ class SignUpFormBase extends Component {
   }
 
   onSubmit = event => {
-    const {username, email, passwordOne } = this.state;
+    const {username, email, passwordOne, position, online } = this.state;
 
     this.props.firebase
       .doCreateUserWithEmailAndPassword(email, passwordOne)
@@ -37,6 +39,8 @@ class SignUpFormBase extends Component {
           .set({
             username,
             email,
+            position,
+            online,
           });
       })
       .then(() => {
