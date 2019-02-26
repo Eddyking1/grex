@@ -10,7 +10,7 @@ export const SignInUp = styled.div`
   width:100vw;
   margin:0 auto;
   padding-top:100px;
-
+  overflow-x: none;
 
   form {
       padding:20px;

@@ -51,7 +51,7 @@ class PasswordForgetFormBase extends Component {
    return (
      <SignInUp>
      <form onSubmit={this.onSubmit}>
-     <h1>PasswordForget</h1>
+     <h1>Forgot password? Change here!</h1>
        <input
          name="email"
          value={this.state.email}
