@@ -177,44 +177,42 @@ class MessageItem extends Component {
     const { editMode, editText } = this.state;
 
     return (
-      <div></div>
+      <li>
+        {editMode ? (
+          <input
+            type="text"
+            value={editText}
+            onChange={this.onChangeEditText}
+          />
+        ) : (
+          <span>
+            <strong>
+              {message.user.username || message.user.userId}
+            </strong>{' '}
+            {message.text} {message.editedAt && <span>(Edited)</span>}
+          </span>
+        )}
+
+        {editMode ? (
+          <span>
+            <button onClick={this.onSaveEditText}>Save</button>
+            <button onClick={this.onToggleEditMode}>Reset</button>
+          </span>
+        ) : (
+          <button onClick={this.onToggleEditMode}>Edit</button>
+        )}
+
+        {!editMode && (
+          <button
+            type="button"
+            onClick={() => onRemoveMessage(message.uid)}
+          >
+            Delete
+          </button>
+        )}
+      </li>
     );
   }
 }
-
-// <li>
-//   {editMode ? (
-//     <input
-//       type="text"
-//       value={editText}
-//       onChange={this.onChangeEditText}
-//     />
-//   ) : (
-//     <span>
-//       <strong>
-//         {message.user.username || message.user.userId}
-//       </strong>{' '}
-//       {message.text} {message.editedAt && <span>(Edited)</span>}
-//     </span>
-//   )}
-//
-//   {editMode ? (
-//     <span>
-//       <button onClick={this.onSaveEditText}>Save</button>
-//       <button onClick={this.onToggleEditMode}>Reset</button>
-//     </span>
-//   ) : (
-//     <button onClick={this.onToggleEditMode}>Edit</button>
-//   )}
-//
-//   {!editMode && (
-//     <button
-//       type="button"
-//       onClick={() => onRemoveMessage(message.uid)}
-//     >
-//       Delete
-//     </button>
-//   )}
-// </li>
 
 export default MessagesBase;
