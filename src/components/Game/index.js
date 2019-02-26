@@ -4,7 +4,8 @@ import { withFirebase } from "../Firebase";
 import { AuthUserContext } from "../Session";
 import {GameMap, Wrapper} from "./styles";
 
-const mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const mapUrl =
+"https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png";
 const mapCenter = [59.32, 18.06];
 const zoomLevel = 12;
 
@@ -101,9 +102,11 @@ loadUsersFromDB = () => {
     this.getUserPositionFromDB();
   };
 
-  componentDidMount() {
 
-      this.props.firebase.user(this.props.userId).update({online: true});
+  componentDidMount() {
+      if(this.props.userId) {
+        this.props.firebase.user(this.props.userId).update({online: true});
+      }
 
       this.getUserPositionFromDB();
       this.loadUsersFromDB();
@@ -124,6 +127,7 @@ loadUsersFromDB = () => {
   componentWillUnmount() {
     this.props.firebase.user(this.props.userId).update({online: false});
     navigator.geolocation.clearWatch(this.watchId);
+
   }
 
 
@@ -145,7 +149,7 @@ loadUsersFromDB = () => {
              markers={markers}
                       >
           <TileLayer url={mapUrl}
-                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                     attribution='Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           {markers.map((marker, index) => (
             <Marker key={index} position={Object.values(marker)}>
