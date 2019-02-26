@@ -35,7 +35,6 @@ class HomePage extends Component {
   render() {
     return (
       <div>
-        <Messages users={this.state.users} />
         { this.state.users && this.props.authUser ? <div>
           <GameComponent userId={this.props.authUser.uid} />
           <Messages users={this.state.users} authUser={this.props.authUser.uid} /> </div>: <h1>Website is loading...</h1> }
