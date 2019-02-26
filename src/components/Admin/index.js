@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withFirebase } from '../Firebase';
 import { withAuthorization } from '../Session';
 import styled from 'styled-components';
-import { createGlobalStyle } from 'styled-components';
 
 
 
@@ -19,7 +18,7 @@ const AdminStyle = styled.div`
 
 const AdminText = styled.div`
   display:flex;
-  width:50vw;
+  width:60vw;
   padding:10px;
   border: 2px solid;
   flex-direction:column;
@@ -29,7 +28,7 @@ const Players = styled.div`
   display:flex;
   flex-direction:row;
 
-  li {
+  p {
     display:flex;
     justify-content:flex-end;
     margin:0 auto;

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const SignInUp = styled.div`
+export const AccPage = styled.div`
   display: flex;
   justify-content:center;
   align-content:center;
@@ -9,11 +9,11 @@ export const SignInUp = styled.div`
   min-height: 100vh;
   width:100vw;
   margin:0 auto;
-  padding-top:100px;
   overflow-x: none;
+  flex-wrap:wrap;
 
   form {
-      padding:20px;
+    padding:20px;
     height: 20%;
     width: 50vw;
     background-color: hsl(225, 70%, 5%);
@@ -21,10 +21,12 @@ export const SignInUp = styled.div`
     margin: 0 auto;
     border: 2px solid green;
 
-   @media screen and (max-width: 600px) {
-    width:90vw;
+    @media screen and (max-width: 600px) {
+      width:90vw;
+    }
+
   }
-  }
+
   input {
     margin:0 auto;
     display: flex;
@@ -40,10 +42,15 @@ export const SignInUp = styled.div`
   }
 
   h1{
-    text-align:center;
     padding:10px;
+    font-size:1em;
   }
 
- 
+  p {
+      text-align:center;
+
+      padding:5px;
+  }
+
 
 `;
