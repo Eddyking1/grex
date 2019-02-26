@@ -102,9 +102,7 @@ loadUsersFromDB = () => {
   };
 
   componentDidMount() {
-<<<<<<< HEAD
 
-=======
       this.props.firebase.user(this.props.userId).update({online: true});
 
       this.getUserPositionFromDB();
@@ -126,7 +124,6 @@ loadUsersFromDB = () => {
   componentWillUnmount() {
     this.props.firebase.user(this.props.userId).update({online: false});
     navigator.geolocation.clearWatch(this.watchId);
->>>>>>> Possible to render users on map based on location
   }
 
 
@@ -138,22 +135,6 @@ loadUsersFromDB = () => {
   }
 
     return (
-<<<<<<< HEAD
-
-        <Map style={{height:"500px", width:"500px"}}
-            center={mapCenter}
-            zoom={zoomLevel}
-            maxZoom={15}
-            minZoom={9}
-
-        >
-            <TileLayer url={mapUrl} attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-/>
-        </Map>
-    )
-  }
-  };
-=======
       <Wrapper>
         {this.state.dbCoords ?
         <GameMap center={mapCenter}
@@ -178,6 +159,5 @@ loadUsersFromDB = () => {
           );
       };
 }
->>>>>>> Possible to render users on map based on location
 
 export default Game;
