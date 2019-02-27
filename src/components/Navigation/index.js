@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthUserContext } from '../Session';
 
 import {Navbar, Sidebar, Overlay, NavigationExit} from './styles';
-import {HamburgerMenu} from '../../styles/Icons';
-import {NavCross} from '../../styles/Icons';
+import {HamburgerMenu, NavCross} from '../../styles/Icons';
 
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
@@ -29,7 +28,7 @@ const NavigationAuth = () => (
    <NavigationExit><NavCross/></NavigationExit>
    <li>
      <Link to={ROUTES.HOME}>
-       <img src={require("../../assets/ball-spotted.png")} alt="app logo"/>
+     <img src={require("../../assets/egg.svg")} alt="app logo" />
        <h3>PLAY</h3>
      </Link>
    </li>
@@ -47,7 +46,7 @@ const NavigationNonAuth = () => (
  <ul>
    <NavigationExit><NavCross/></NavigationExit>
    <li>
-     <Link to={ROUTES.LANDING}> <img src={require("../../assets/ball-spotted.png")} alt="app logo"/> </Link>
+     <Link to={ROUTES.LANDING}> <img src={require("../../assets/egg.svg")} alt="app logo" /> </Link>
    </li>
    <li>
      <Link to={ROUTES.SIGN_IN}>Sign In</Link>

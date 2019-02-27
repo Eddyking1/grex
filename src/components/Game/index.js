@@ -3,6 +3,8 @@ import {TileLayer, Marker, Popup, GeoJSON } from "react-leaflet";
 import { withFirebase } from "../Firebase";
 import { AuthUserContext } from "../Session";
 import {GameMap, Wrapper} from "./styles";
+import L from 'leaflet';
+
 
 const mapUrl =
 "https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png";
@@ -19,6 +21,8 @@ const Coords = props => (
     ) : null}
   </div>
 );
+
+
 
 class Game extends Component {
   constructor(props) {
@@ -132,6 +136,13 @@ loadUsersFromDB = () => {
 
 
   render() {
+/* 
+    const mylocation =[];
+    if ( this.state.users) {
+      var myspot = this.state.user.position;
+      console.log(myspot);
+    }
+ */
   const markers = [];
   if (this.state.users) {
     var positions = this.state.users.map(userObj => ({ ...userObj.position, username: userObj.username}));

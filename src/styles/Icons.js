@@ -3,7 +3,7 @@ import {Menu} from 'styled-icons/material/Menu';
 import {Cross} from 'styled-icons/icomoon/Cross';
 import {UserPlus} from 'styled-icons/icomoon/UserPlus';
 import {DoorOpen} from 'styled-icons/fa-solid/DoorOpen';
-
+import {DownArrowSquare} from 'styled-icons/boxicons-solid/DownArrowSquare'
 
 
 export const HamburgerMenu = styled(Menu)`
@@ -30,4 +30,11 @@ export const LoginIcon = styled(DoorOpen)`
   height: 5rem;
   width: 5rem;
   margin:1em;
+`;
+
+export const LearnMore = styled(DownArrowSquare)`
+  color: var(--menu-color);
+  height: 3rem;
+  width: 3rem;
+  margin:0.5em;
 `;

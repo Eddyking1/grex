@@ -5,7 +5,7 @@ const GlobalStyle = createGlobalStyle`
 
   :root {
     --menu-color: hsl(231, 74%, 11%);
-    --nav-text-color: hsl(151, 89%, 49%);
+    --nav-text-color: hsl(243, 100%, 69%);
 
     --search-field: hsl(220, 7%, 17%);
     --highlight-color: hsl(220, 7%, 27%);
@@ -23,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    background: #e0f8f7;
+    background: var(--menu-color);
     color: white;
   }
 
