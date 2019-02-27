@@ -3,26 +3,12 @@ import {TileLayer, Marker, Popup, GeoJSON } from "react-leaflet";
 import { withFirebase } from "../Firebase";
 import { AuthUserContext } from "../Session";
 import {GameMap, Wrapper} from "./styles";
-import L from 'leaflet';
-
+import {SignUpIcon} from "../../styles/Icons"
 
 const mapUrl =
 "https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png";
 const mapCenter = [59.32, 18.06];
 const zoomLevel = 12;
-
-const Coords = props => (
-  <div>
-    {props.position ? (
-      <div>
-        <div>{props.position.latitude}</div>
-        <div>{props.position.longitude}</div>
-      </div>
-    ) : null}
-  </div>
-);
-
-
 
 class Game extends Component {
   constructor(props) {
@@ -35,6 +21,8 @@ class Game extends Component {
   }
 
   calculateDistance = (lat1, lon1, lat2, lon2) => {
+    console.log("calculateDistance");
+
     var R = 6371;
     var dLat = ((lat2 - lat1) * Math.PI) / 180;
     var dLon = ((lon2 - lon1) * Math.PI) / 180;
@@ -50,6 +38,7 @@ class Game extends Component {
   };
 
   updatePosition = position => {
+    console.log("updatePosition")
     this.setState({
       browserCoords: {
         latitude: position.coords.latitude,
@@ -69,6 +58,8 @@ class Game extends Component {
 
 
 loadUsersFromDB = () => {
+  console.log("loadUsersFromDB");
+
   this.props.firebase.users().on('value', snapshot => {
     const usersObject = snapshot.val();
 
@@ -99,6 +90,8 @@ loadUsersFromDB = () => {
   };
 
   writeUserPositionToDB = position => {
+    console.log("writeUserPositionToDB");
+
     const { latitude, longitude } = position;
     this.props.firebase
       .user(this.props.userId)
@@ -108,13 +101,17 @@ loadUsersFromDB = () => {
 
 
   componentDidMount() {
+    console.log("componentDidMount");
+
       if(this.props.userId) {
         this.props.firebase.user(this.props.userId).update({online: true});
       }
 
       this.getUserPositionFromDB();
       this.loadUsersFromDB();
-      this.watchId = navigator.geolocation.getCurrentPosition(
+
+
+      this.watchId = navigator.geolocation.watchPosition(
        this.updatePosition,
         error => {
           console.warn('ERROR(' + error.code + '): ' + error.message);
@@ -129,6 +126,8 @@ loadUsersFromDB = () => {
     }
 
   componentWillUnmount() {
+    console.log("componentWillUnmount");
+
     this.props.firebase.user(this.props.userId).update({online: false});
     navigator.geolocation.clearWatch(this.watchId);
 
@@ -136,13 +135,7 @@ loadUsersFromDB = () => {
 
 
   render() {
-/* 
-    const mylocation =[];
-    if ( this.state.users) {
-      var myspot = this.state.user.position;
-      console.log(myspot);
-    }
- */
+
   const markers = [];
   if (this.state.users) {
     var positions = this.state.users.map(userObj => ({ ...userObj.position, username: userObj.username}));
@@ -160,10 +153,9 @@ loadUsersFromDB = () => {
              markers={markers}
                       >
           <TileLayer url={mapUrl}
-                     attribution='Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           {markers.map((marker, index) => (
-            <Marker key={index} position={Object.values(marker)}>
+            <Marker key={index} position={Object.values(marker)} icon={<SignUpIcon/>}>
               <Popup>
                 {marker.username}
               </Popup>
