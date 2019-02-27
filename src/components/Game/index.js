@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import {TileLayer, Marker, Popup, GeoJSON } from "react-leaflet";
+import {TileLayer, Marker, Popup } from "react-leaflet";
 import { withFirebase } from "../Firebase";
-import { AuthUserContext } from "../Session";
+import { userContext } from "../Session";
 import {GameMap, Wrapper} from "./styles";
 import {SignUpIcon} from "../../styles/Icons"
+import L from 'leaflet';
+
 
 const mapUrl =
 "https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png";
@@ -16,7 +18,8 @@ class Game extends Component {
     this.state = {
       browserCoords: null,
       dbCoords: null,
-      users: null
+      users: null,
+      eggs: null
     };
   }
 
@@ -35,6 +38,99 @@ class Game extends Component {
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c;
     return Math.round(d * 1000);
+  };
+
+  loadUsersFromDB = () => {
+    console.log("loadUsersFromDB");
+
+    this.props.firebase.users().on('value', snapshot => {
+      const usersObject = snapshot.val();
+
+      const usersList = Object.keys(usersObject).map(key => ({
+        ...usersObject[key],
+        uid: key,
+      }));
+
+      const usersOnline = usersList.filter(user => user.online === true);
+
+      this.setState({
+        users: usersOnline,
+      });
+    });
+  }
+
+  loadEggsFromDB = () => {
+
+    this.props.firebase
+      .eggs()
+      .on('value', snapshot => {
+        const eggsObject = snapshot.val();
+
+        if (eggsObject) {
+
+          const eggsList = Object.keys(eggsObject).map(key => ({
+            ...eggsObject[key],
+            uid: key,
+
+          }));
+
+          this.setState({
+            eggs: eggsList,
+          });
+
+          console.log(Object.keys(this.state.eggs).length);
+          this.spawnEggs(Object.keys(this.state.eggs).length);
+
+        } else {
+          this.setState({ eggs: null});
+        }
+      });
+
+      this.addEggToDB();
+
+  }
+
+  spawnEggs = (number) => {
+    console.log(number, " INC number");
+    for (number; number < 5; number++) {
+      this.addEggToDB();
+    }
+  }
+
+  addEggToDB = () => {
+    this.props.firebase.eggs().push({
+      userId: null,
+      targetLocation: {latitude: this.positonGeneratorX(), longitude: this.positonGeneratorY()},
+      position: {latitude: this.positonGeneratorX(), longitude: this.positonGeneratorY()},
+      createdAt: this.props.firebase.serverValue.TIMESTAMP
+    })
+  }
+
+  positonGeneratorX = () => {
+    const maxX = 59.350879;
+    const minX = 59.290619;
+
+    return Math.random() * (maxX - minX) + minX;
+  }
+
+  positonGeneratorY = () => {
+    const maxY = 18.132512;
+    const minY = 18.003479;
+
+    return Math.random() * (maxY - minY) + minY;
+  }
+
+  getUserPositionFromDB = () => {
+    console.log("getUserPositionFromDB");
+    this.props.firebase
+    .user(this.props.user.uid)
+    .child("position")
+    .once("value", snapshot => {
+      const userPosition = snapshot.val();
+
+      this.setState({ dbCoords: userPosition}, () => {
+      });
+    });
   };
 
   updatePosition = position => {
@@ -56,59 +152,27 @@ class Game extends Component {
     }
   };
 
-
-loadUsersFromDB = () => {
-  console.log("loadUsersFromDB");
-
-  this.props.firebase.users().on('value', snapshot => {
-    const usersObject = snapshot.val();
-
-    const usersList = Object.keys(usersObject).map(key => ({
-      ...usersObject[key],
-      uid: key,
-    }));
-
-    const usersOnline = usersList.filter(user => user.online === true);
-
-    this.setState({
-      users: usersOnline,
-    });
-  });
-
-}
-  getUserPositionFromDB = () => {
-    console.log("getUserPositionFromDB");
-    this.props.firebase
-      .user(this.props.userId)
-      .child("position")
-      .once("value", snapshot => {
-        const userPosition = snapshot.val();
-
-        this.setState({ dbCoords: userPosition}, () => {
-        });
-      });
-  };
-
   writeUserPositionToDB = position => {
     console.log("writeUserPositionToDB");
 
     const { latitude, longitude } = position;
     this.props.firebase
-      .user(this.props.userId)
+      .user(this.props.user.uid)
       .update({ position: { latitude: latitude, longitude: longitude } });
     this.getUserPositionFromDB();
   };
 
-
   componentDidMount() {
     console.log("componentDidMount");
 
+
       if(this.props.userId) {
-        this.props.firebase.user(this.props.userId).update({online: true});
+        this.props.firebase.user(this.props.user.uid).update({online: true});
       }
 
       this.getUserPositionFromDB();
       this.loadUsersFromDB();
+      this.loadEggsFromDB();
 
 
       this.watchId = navigator.geolocation.watchPosition(
@@ -123,29 +187,29 @@ loadUsersFromDB = () => {
           distanceFilter: 1
         }
       );
+
     }
 
   componentWillUnmount() {
     console.log("componentWillUnmount");
 
-    this.props.firebase.user(this.props.userId).update({online: false});
+    this.props.firebase.user(this.props.user.uid).update({online: false});
     navigator.geolocation.clearWatch(this.watchId);
 
   }
 
-
   render() {
+    const markers = [];
 
-  const markers = [];
-  if (this.state.users) {
-    var positions = this.state.users.map(userObj => ({ ...userObj.position, username: userObj.username}));
-    markers.push(...positions)
-  }
+    if(this.state.users) {
+      var positions = this.state.users.map(userObj => ({ ...userObj.position, username: userObj.username}));
+      markers.push(...positions)
+    }
 
     return (
       <Wrapper>
         {this.state.dbCoords ?
-        <GameMap center={mapCenter}
+        <GameMap center={Object.values(this.state.dbCoords)}
              zoom={zoomLevel}
              maxZoom={15}
              minZoom={9}
@@ -155,7 +219,7 @@ loadUsersFromDB = () => {
           <TileLayer url={mapUrl}
           />
           {markers.map((marker, index) => (
-            <Marker key={index} position={Object.values(marker)} icon={<SignUpIcon/>}>
+            <Marker key={index} position={Object.values(marker)}>
               <Popup>
                 {marker.username}
               </Popup>
