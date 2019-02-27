@@ -62,7 +62,7 @@ export const Overlay = styled.aside`
     position: relative;
 
     img {
-      width: 110px;
+      width: 50%;
       padding: 0 0 20px;
     }
 

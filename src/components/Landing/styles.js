@@ -1,93 +1,82 @@
 import styled from "styled-components";
 
-export const LandUp = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-  flex-wrap: wrap;
-  button {
-    display: inline-block;
-    background-color: var(--nav-text-color);
-    align-content: center;
-    margin: 0 10px 10px;
-    font-size: 1.5em;
-    text-decoration: none;
-
-    a {
-      width: 100vw;
-      border: none;
-      text-decoration: none;
-      margin: 0 auto;
-    }
-    a:hover {
-      border: none;
-    }
-  }
-`;
-
 export const LandingPage = styled.div`
+  display: flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  justify-items:center;
+  width: 100vw;
+  min-height: calc(100vh - 60px);
   background-color: var(--menu-color);
-  font-family: "System76 Fira Sans", "Fira Sans", sans-serif;
-  min-height: 100vh;
 
-  h1 {
-    font-size: 3em;
-    text-align: center;
-    color: var(--nav-text-color);
-    padding: 40px;
-    font-family: "Roboto", sans-serif;
-  }
 
-  h2 {
+
+  button {
+    padding: 0.5em 1em;
+    margin: 4em 0;
+    border: none;
+    outline: none;
+    background: var(--nav-text-color);
+    color: white;
     font-size: 2em;
-    text-align: center;
-  }
-  ul {
-    width: 60vw;
-    padding: 10px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    text-align: left;
-    position: relative;
+    font-weight: bold;
+    border-radius: 0.1em;
+
+    @media screen and (max-width:700px) {
+    margin: 2em 0em;
   }
 
-  li {
-    display: flex;
-    flex-wrap: wrap;
-    text-align: center;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    min-width: 100vw;
-    padding: 10px;
   }
 
   p {
-    font-size: 1.8em;
-    font-weight: bold;
+    padding: 1em 0 0;
+    text-align: center;
+    font-size: 1.5em;
+    width:80vw;
   }
 
-  img {
-    width: 100px;
-    padding: 0 10px 20px;
+  h1 {
+    height: 2em;
+    text-align: center;
   }
 
-  a {
-    display: block;
-    padding: 20px;
-    font-size: 2.5em;
-    border-bottom: 2px solid #001d34;
-    margin: 10px 0;
-    transition: 0.4s;
+img {
+  min-width:200px;
+  width: 30%;
+  margin: 2em 2em;
+}
 
-    :hover {
-      border-bottom: 2px solid var(--nav-text-color);
-      transition: 0.4s;
-      transform: scale(1.05);
-    }
+`;
+
+export const ButtonPos = styled.div`
+ background-color: hsl(243, 66%, 72%);
+ display:flex;
+ justify-content:flex-end;
+ flex-direction:column;
+ 
+ padding:1em;
+ width: 100vw;
+ text-align:center;
+ align-items:center;
+ aling-content:center;
+ vertical-align:middle;
+ color:white;
+
+  h2{
+    font-size:2em;
   }
+
+`;
+
+
+export const LearnMoreInfo = styled.div `
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  justify-items:center;
+
+
 `;

@@ -3,6 +3,8 @@ import {TileLayer, Marker, Popup, GeoJSON } from "react-leaflet";
 import { withFirebase } from "../Firebase";
 import { AuthUserContext } from "../Session";
 import {GameMap, Wrapper} from "./styles";
+import L from 'leaflet';
+
 
 const mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const mapCenter = [59.32, 18.06];
@@ -18,6 +20,8 @@ const Coords = props => (
     ) : null}
   </div>
 );
+
+
 
 class Game extends Component {
   constructor(props) {
@@ -128,6 +132,13 @@ loadUsersFromDB = () => {
 
 
   render() {
+/* 
+    const mylocation =[];
+    if ( this.state.users) {
+      var myspot = this.state.user.position;
+      console.log(myspot);
+    }
+ */
   const markers = [];
   if (this.state.users) {
     var positions = this.state.users.map(userObj => ({ ...userObj.position, username: userObj.username}));
