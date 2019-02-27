@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import GlobalStyle from '../../styles/GlobalStyle';
+import {GlobalStyle} from '../../styles/GlobalStyle';
 import Navigation from '../Navigation';
 import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';

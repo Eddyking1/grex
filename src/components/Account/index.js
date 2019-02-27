@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccPage } from './styles';
+import {GlobalStyle, FormStyle} from '../../styles/GlobalStyle';
 
 
 import { AuthUserContext, withAuthorization } from '../Session';
@@ -10,10 +10,10 @@ const AccountPage = () => (
  <AuthUserContext.Consumer>
    {authUser => (
      
-     <AccPage>
+     <FormStyle>
      <h1>Account email: {authUser.email}</h1>
        <PasswordChangeForm />
-     </AccPage>
+     </FormStyle>
    )}
  </AuthUserContext.Consumer>
 );
