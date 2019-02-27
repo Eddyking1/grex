@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import GlobalStyle from '../../styles/GlobalStyle';
+
 import { withFirebase } from '../Firebase';
 import { withAuthorization } from '../Session';
 import styled from 'styled-components';

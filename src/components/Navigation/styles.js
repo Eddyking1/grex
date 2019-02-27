@@ -79,7 +79,6 @@ export const Overlay = styled.aside`
         padding: 20px;
         font-size: 2.5em;
         color: #d8e6f7;
-        border-bottom: 2px solid #001D34;
         margin: 10px 0;
         transition: .4s;
 

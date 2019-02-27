@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import {GlobalStyle, FormStyle} from '../../styles/GlobalStyle';
+
 
 import { withFirebase } from '../Firebase';
 
@@ -41,7 +43,7 @@ class PasswordChangeForm extends Component {
      passwordOne !== passwordTwo || passwordOne === '';
 
    return (
-     
+     <FormStyle>
      <form onSubmit={this.onSubmit}>
      <p> Change password here!</p>
        <input
@@ -64,6 +66,7 @@ class PasswordChangeForm extends Component {
 
        {error && <p>{error.message}</p>}
      </form>
+     </FormStyle>
    );
  }
 }

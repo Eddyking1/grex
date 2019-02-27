@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
+import {GlobalStyle, FormStyle} from '../../styles/GlobalStyle';
+
 
 import { SignUpLink } from '../SignUp';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 import { PasswordForgetLink } from '../PasswordForget';
 import { Sign } from 'styled-icons/fa-solid';
-import { SignInUp } from "./styles";
+import {LoginIcon} from '../../styles/Icons';
 
 
 const SignInPage = () => (
@@ -56,9 +58,9 @@ const SignInPage = () => (
     const isInvalid = password === '' || email === '';
  
     return (
-      <SignInUp>
+      <FormStyle>
       <form onSubmit={this.onSubmit}>
-      <h1>Sign in here!</h1>
+      <LoginIcon/>
         <input
           name="email"
           value={email}
@@ -73,16 +75,17 @@ const SignInPage = () => (
           type="password"
           placeholder="Password"
         />
+        <PasswordForgetLink />
+        <SignUpLink />
         <button disabled={isInvalid} type="submit">
         Sign in
         </button>
  
         {error && <p>{error.message}</p>}
-        <PasswordForgetLink />
-         <SignUpLink />
+        
       </form>
       
-      </SignInUp>
+      </FormStyle>
     );
   }
  }
