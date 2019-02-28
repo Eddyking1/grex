@@ -1,28 +1,16 @@
 import React, { Component } from "react";
-import {TileLayer, Marker, Popup, GeoJSON } from "react-leaflet";
+import {TileLayer, Marker, Popup } from "react-leaflet";
 import { withFirebase } from "../Firebase";
-import { AuthUserContext } from "../Session";
+import { userContext } from "../Session";
 import {GameMap, Wrapper} from "./styles";
+import {SignUpIcon} from "../../styles/Icons";
+import MessagesBase from '../Chat';
 import L from 'leaflet';
 
-
 const mapUrl =
-"https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png";
+"https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png";
 const mapCenter = [59.32, 18.06];
-const zoomLevel = 12;
-
-const Coords = props => (
-  <div>
-    {props.position ? (
-      <div>
-        <div>{props.position.latitude}</div>
-        <div>{props.position.longitude}</div>
-      </div>
-    ) : null}
-  </div>
-);
-
-
+const zoomLevel = 11;
 
 class Game extends Component {
   constructor(props) {
@@ -30,11 +18,14 @@ class Game extends Component {
     this.state = {
       browserCoords: null,
       dbCoords: null,
-      users: null
+      users: null,
+      eggs: null
     };
   }
 
   calculateDistance = (lat1, lon1, lat2, lon2) => {
+    console.log("calculateDistance");
+
     var R = 6371;
     var dLat = ((lat2 - lat1) * Math.PI) / 180;
     var dLon = ((lon2 - lon1) * Math.PI) / 180;
@@ -49,7 +40,97 @@ class Game extends Component {
     return Math.round(d * 1000);
   };
 
+  loadUsersFromDB = () => {
+    console.log("loadUsersFromDB");
+
+    this.props.firebase.users().on('value', snapshot => {
+      const usersObject = snapshot.val();
+
+      const usersList = Object.keys(usersObject).map(key => ({
+        ...usersObject[key],
+        uid: key,
+      }));
+
+      const usersOnline = usersList.filter(user => user.online === true);
+
+      this.setState({
+        users: usersOnline,
+      });
+    });
+  }
+
+  loadEggsFromDB = () => {
+
+    this.props.firebase
+      .eggs()
+      .on('value', snapshot => {
+        const eggsObject = snapshot.val();
+
+        if (eggsObject) {
+          console.log("IF");
+          const eggsList = Object.keys(eggsObject).map(key => ({
+            ...eggsObject[key],
+            uid: key,
+
+          }));
+
+          this.setState({
+            eggs: eggsList,
+          });
+          console.log("STATE", Object.keys(this.state.eggs).length);
+          this.spawnEggs();
+
+
+        } else {
+          console.log("ELSE");
+          this.addEggToDB();
+        }
+      });
+  }
+
+  spawnEggs = () => {
+    if (Object.keys(this.state.eggs).length < 5) {
+      this.addEggToDB();
+    }
+  }
+
+  addEggToDB = () => {
+    this.props.firebase.eggs().push({
+      targetLocation: {latitude: this.positonGeneratorX(), longitude: this.positonGeneratorY()},
+      position: {latitude: this.positonGeneratorX(), longitude: this.positonGeneratorY()},
+      createdAt: this.props.firebase.serverValue.TIMESTAMP
+    })
+  }
+
+  positonGeneratorX = () => {
+    const maxX = 59.563;
+    const minX = 59.037;
+
+    return Math.random() * (maxX - minX) + minX;
+  }
+
+  positonGeneratorY = () => {
+    const maxY = 18.489;
+    const minY = 17.553;
+
+    return Math.random() * (maxY - minY) + minY;
+  }
+
+  getUserPositionFromDB = () => {
+    console.log("getUserPositionFromDB");
+    this.props.firebase
+    .user(this.props.user.uid)
+    .child("position")
+    .once("value", snapshot => {
+      const userPosition = snapshot.val();
+
+      this.setState({ dbCoords: userPosition}, () => {
+      });
+    });
+  };
+
   updatePosition = position => {
+    console.log("updatePosition")
     this.setState({
       browserCoords: {
         latitude: position.coords.latitude,
@@ -67,54 +148,30 @@ class Game extends Component {
     }
   };
 
-
-loadUsersFromDB = () => {
-  this.props.firebase.users().on('value', snapshot => {
-    const usersObject = snapshot.val();
-
-    const usersList = Object.keys(usersObject).map(key => ({
-      ...usersObject[key],
-      uid: key,
-    }));
-
-    const usersOnline = usersList.filter(user => user.online === true);
-
-    this.setState({
-      users: usersOnline,
-    });
-  });
-
-}
-  getUserPositionFromDB = () => {
-    console.log("getUserPositionFromDB");
-    this.props.firebase
-      .user(this.props.userId)
-      .child("position")
-      .once("value", snapshot => {
-        const userPosition = snapshot.val();
-
-        this.setState({ dbCoords: userPosition}, () => {
-        });
-      });
-  };
-
   writeUserPositionToDB = position => {
+    console.log("writeUserPositionToDB");
+
     const { latitude, longitude } = position;
     this.props.firebase
-      .user(this.props.userId)
+      .user(this.props.user.uid)
       .update({ position: { latitude: latitude, longitude: longitude } });
     this.getUserPositionFromDB();
   };
 
-
   componentDidMount() {
+    console.log("componentDidMount");
+
+
       if(this.props.userId) {
-        this.props.firebase.user(this.props.userId).update({online: true});
+        this.props.firebase.user(this.props.user.uid).update({online: true});
       }
 
       this.getUserPositionFromDB();
       this.loadUsersFromDB();
-      this.watchId = navigator.geolocation.getCurrentPosition(
+      this.loadEggsFromDB();
+
+
+      this.watchId = navigator.geolocation.watchPosition(
        this.updatePosition,
         error => {
           console.warn('ERROR(' + error.code + '): ' + error.message);
@@ -126,33 +183,62 @@ loadUsersFromDB = () => {
           distanceFilter: 1
         }
       );
+
     }
 
   componentWillUnmount() {
-    this.props.firebase.user(this.props.userId).update({online: false});
+    console.log("componentWillUnmount");
+
+    this.props.firebase.user(this.props.user.uid).update({online: false});
     navigator.geolocation.clearWatch(this.watchId);
 
   }
 
-
   render() {
-/* 
-    const mylocation =[];
-    if ( this.state.users) {
-      var myspot = this.state.user.position;
-      console.log(myspot);
+    const markers = [];
+    const eggMarkers = [];
+
+    if(this.state.users) {
+      let positions = this.state.users.map(userObj => {
+        if(userObj.uid !== this.props.user.uid) {
+          console.log(this.props.user.username);
+          return {...userObj.position, username: userObj.username};
+        }
+      });
+      markers.push(...positions)
     }
- */
-  const markers = [];
-  if (this.state.users) {
-    var positions = this.state.users.map(userObj => ({ ...userObj.position, username: userObj.username}));
-    markers.push(...positions)
-  }
+
+    if(this.state.eggs) {
+      let eggsPosition = this.state.eggs.map(eggObj => ({ ...eggObj.position, ...eggObj.targetLocation}));
+      eggMarkers.push(...eggsPosition);
+    }
+
+    const eggIcon = L.icon({
+     iconUrl: require("../../assets/ball-spotted.png"),
+     iconSize: [30, 40],
+     iconAnchor: [15, 64],
+     popupAnchor: [0, -65]
+   });
+
+   const playerIcon = L.icon({
+    iconUrl: require("../../assets/player.png"),
+    iconSize: [60, 70],
+    iconAnchor: [15, 64],
+    popupAnchor: [0, -65]
+  });
+
+  const playersIcon = L.icon({
+   iconUrl: require("../../assets/players.png"),
+   iconSize: [60, 70],
+   iconAnchor: [15, 64],
+   popupAnchor: [0, -65]
+ });
 
     return (
+      <div>
       <Wrapper>
         {this.state.dbCoords ?
-        <GameMap center={mapCenter}
+        <GameMap center={Object.values(this.state.dbCoords)}
              zoom={zoomLevel}
              maxZoom={15}
              minZoom={9}
@@ -160,17 +246,33 @@ loadUsersFromDB = () => {
              markers={markers}
                       >
           <TileLayer url={mapUrl}
-                     attribution='Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
+          <Marker position={Object.values(this.state.dbCoords)} icon={playerIcon}>
+            <Popup>
+              <span> Me </span>
+            </Popup>
+          </Marker>
           {markers.map((marker, index) => (
-            <Marker key={index} position={Object.values(marker)}>
+            <Marker key={index} position={Object.values(marker)} icon={playersIcon}>
               <Popup>
                 {marker.username}
               </Popup>
             </Marker>
           ))}
+          {eggMarkers.map((marker, index) => (
+            <Marker key={index} position={Object.values(marker)} icon={eggIcon}>
+              <Popup>
+                <span>Target Location: </span>
+              </Popup>
+            </Marker>
+          ))}
         </GameMap> : <div></div>}
       </Wrapper>
+      <Wrapper>
+        {this.props.user && this.state.users ?
+        <MessagesBase users={this.props.users} authUser={this.props.user.uid} firebase={this.props.firebase} /> : <div></div>}
+      </Wrapper>
+      </div>
           );
       };
 }

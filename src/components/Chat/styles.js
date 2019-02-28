@@ -7,6 +7,7 @@ export const Chat = styled.div`
   justify-content: center;
   align-content: center;
   align-items: center;
+  min-height: 50vh;
 `;
 
 export const ChatList = styled.div`
