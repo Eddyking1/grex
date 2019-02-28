@@ -3,14 +3,14 @@ import {TileLayer, Marker, Popup } from "react-leaflet";
 import { withFirebase } from "../Firebase";
 import { userContext } from "../Session";
 import {GameMap, Wrapper} from "./styles";
-import {SignUpIcon} from "../../styles/Icons"
+import {SignUpIcon} from "../../styles/Icons";
+import MessagesBase from '../Chat';
 import L from 'leaflet';
 
-
 const mapUrl =
-"https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png";
+"https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png";
 const mapCenter = [59.32, 18.06];
-const zoomLevel = 12;
+const zoomLevel = 11;
 
 class Game extends Component {
   constructor(props) {
@@ -67,7 +67,7 @@ class Game extends Component {
         const eggsObject = snapshot.val();
 
         if (eggsObject) {
-
+          console.log("IF");
           const eggsList = Object.keys(eggsObject).map(key => ({
             ...eggsObject[key],
             uid: key,
@@ -77,29 +77,25 @@ class Game extends Component {
           this.setState({
             eggs: eggsList,
           });
+          console.log("STATE", Object.keys(this.state.eggs).length);
+          this.spawnEggs();
 
-          console.log(Object.keys(this.state.eggs).length);
-          this.spawnEggs(Object.keys(this.state.eggs).length);
 
         } else {
-          this.setState({ eggs: null});
+          console.log("ELSE");
+          this.addEggToDB();
         }
       });
-
-      this.addEggToDB();
-
   }
 
-  spawnEggs = (number) => {
-    console.log(number, " INC number");
-    for (number; number < 5; number++) {
+  spawnEggs = () => {
+    if (Object.keys(this.state.eggs).length < 5) {
       this.addEggToDB();
     }
   }
 
   addEggToDB = () => {
     this.props.firebase.eggs().push({
-      userId: null,
       targetLocation: {latitude: this.positonGeneratorX(), longitude: this.positonGeneratorY()},
       position: {latitude: this.positonGeneratorX(), longitude: this.positonGeneratorY()},
       createdAt: this.props.firebase.serverValue.TIMESTAMP
@@ -107,15 +103,15 @@ class Game extends Component {
   }
 
   positonGeneratorX = () => {
-    const maxX = 59.350879;
-    const minX = 59.290619;
+    const maxX = 59.563;
+    const minX = 59.037;
 
     return Math.random() * (maxX - minX) + minX;
   }
 
   positonGeneratorY = () => {
-    const maxY = 18.132512;
-    const minY = 18.003479;
+    const maxY = 18.489;
+    const minY = 17.553;
 
     return Math.random() * (maxY - minY) + minY;
   }
@@ -200,13 +196,46 @@ class Game extends Component {
 
   render() {
     const markers = [];
+    const eggMarkers = [];
 
     if(this.state.users) {
-      var positions = this.state.users.map(userObj => ({ ...userObj.position, username: userObj.username}));
+      let positions = this.state.users.map(userObj => {
+        if(userObj.uid !== this.props.user.uid) {
+          console.log(this.props.user.username);
+          return {...userObj.position, username: userObj.username};
+        }
+      });
       markers.push(...positions)
     }
 
+    if(this.state.eggs) {
+      let eggsPosition = this.state.eggs.map(eggObj => ({ ...eggObj.position, ...eggObj.targetLocation}));
+      eggMarkers.push(...eggsPosition);
+    }
+
+    const eggIcon = L.icon({
+     iconUrl: require("../../assets/ball-spotted.png"),
+     iconSize: [30, 40],
+     iconAnchor: [15, 64],
+     popupAnchor: [0, -65]
+   });
+
+   const playerIcon = L.icon({
+    iconUrl: require("../../assets/player.png"),
+    iconSize: [60, 70],
+    iconAnchor: [15, 64],
+    popupAnchor: [0, -65]
+  });
+
+  const playersIcon = L.icon({
+   iconUrl: require("../../assets/players.png"),
+   iconSize: [60, 70],
+   iconAnchor: [15, 64],
+   popupAnchor: [0, -65]
+ });
+
     return (
+      <div>
       <Wrapper>
         {this.state.dbCoords ?
         <GameMap center={Object.values(this.state.dbCoords)}
@@ -218,15 +247,32 @@ class Game extends Component {
                       >
           <TileLayer url={mapUrl}
           />
+          <Marker position={Object.values(this.state.dbCoords)} icon={playerIcon}>
+            <Popup>
+              <span> Me </span>
+            </Popup>
+          </Marker>
           {markers.map((marker, index) => (
-            <Marker key={index} position={Object.values(marker)}>
+            <Marker key={index} position={Object.values(marker)} icon={playersIcon}>
               <Popup>
                 {marker.username}
               </Popup>
             </Marker>
           ))}
+          {eggMarkers.map((marker, index) => (
+            <Marker key={index} position={Object.values(marker)} icon={eggIcon}>
+              <Popup>
+                <span>Target Location: </span>
+              </Popup>
+            </Marker>
+          ))}
         </GameMap> : <div></div>}
       </Wrapper>
+      <Wrapper>
+        {this.props.user && this.state.users ?
+        <MessagesBase users={this.props.users} authUser={this.props.user.uid} firebase={this.props.firebase} /> : <div></div>}
+      </Wrapper>
+      </div>
           );
       };
 }

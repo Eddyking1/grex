@@ -7,7 +7,6 @@ class MessagesBase extends Component {
 
     this.state = {
       text: '',
-      loading: false,
       messages: [],
       limit: 5,
     };
@@ -15,10 +14,10 @@ class MessagesBase extends Component {
 
   componentDidMount() {
     this.onListenForMessages();
+    console.log(this.props);
   }
 
   onListenForMessages = () => {
-    this.setState({ loading: true });
 
     this.props.firebase
       .messages()
@@ -35,7 +34,6 @@ class MessagesBase extends Component {
 
           this.setState({
             messages: messageList,
-            loading: false,
           });
         } else {
           this.setState({ messages: null, loading: false });
@@ -51,10 +49,10 @@ class MessagesBase extends Component {
     this.setState({ text: event.target.value });
   };
 
-  onCreateMessage = (event, authUser) => {
+  onCreateMessage = (event) => {
     this.props.firebase.messages().push({
       text: this.state.text,
-      userId: authUser,
+      userId: this.props.authUser,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
     });
 
@@ -83,7 +81,7 @@ class MessagesBase extends Component {
   };
 
   render() {
-    const { users, authUser } = this.props;
+    const { users } = this.props;
     const { text, messages, loading } = this.state;
     return (
           <Chat>
@@ -113,7 +111,7 @@ class MessagesBase extends Component {
 
             <form
               onSubmit={event =>
-                this.onCreateMessage(event, authUser)
+                this.onCreateMessage(event)
               }
             >
               <input

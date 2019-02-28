@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { compose } from 'recompose';
 import Game from '../Game';
-import MessagesBase from '../Chat'
 import {
   withAuthorization,
 } from '../Session';
@@ -18,6 +17,7 @@ class HomePage extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props.authUser, "home");
     this.setState({loading: true});
 
     this.props.firebase.users().on("value", snapshot => {
@@ -36,14 +36,12 @@ class HomePage extends Component {
     return (
       <div>
         { this.state.users && this.props.authUser ? <div>
-          <GameComponent user={this.props.authUser} />
-          <Messages users={this.state.users} authUser={this.props.authUser.uid} /> </div>: <h1>Website is loading...</h1> }
+          <GameComponent user={this.props.authUser} users={this.state.users}/> </div>: <h1>Website is loading...</h1> }
       </div>
     );
   }
 }
 
-const Messages = withFirebase(MessagesBase);
 const GameComponent = withFirebase(Game);
 
 const condition = authUser => !!authUser;
