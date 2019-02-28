@@ -42,6 +42,11 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
     color: white;
   }
+
+  span {
+    color:var(--nav-text-color)
+  }
+
 `;
 
 const FormStyle = styled.div`
@@ -50,7 +55,7 @@ const FormStyle = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: calc(100vh - 60px);
+  min-height: calc(80vh - 60px);
   background-color: var(--menu-color);
   margin: 0;
   padding: 1em 0.2em;
@@ -80,19 +85,18 @@ const FormStyle = styled.div`
   
   input:-webkit-autofill,
 input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus
+input:-webkit-autofill:focus,
 textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover
+textarea:-webkit-autofill:hover,
 textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-  border: 1px solid green;
-  -webkit-text-fill-color: green;
+  border: 1px solid var(--nav-text-color);
+  -webkit-text-fill-color: var(--nav-text-color);
   -webkit-box-shadow: 0 0 0px 1000px #000 inset;
   transition: background-color 5000s ease-in-out 0s;
 }
-
   input::placeholder {
     /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: white;

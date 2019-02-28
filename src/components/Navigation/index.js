@@ -49,7 +49,7 @@ const NavigationNonAuth = () => (
      <Link to={ROUTES.LANDING}> <img src={require("../../assets/egg.svg")} alt="app logo" /> </Link>
    </li>
    <li>
-     <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+     <Link to={ROUTES.SIGN_IN}> Sign In  </Link>
    </li>
  </ul>
 );
