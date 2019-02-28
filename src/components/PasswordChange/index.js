@@ -45,7 +45,7 @@ class PasswordChangeForm extends Component {
    return (
      <FormStyle>
      <form onSubmit={this.onSubmit}>
-     <p> Change password here!</p>
+     <h1> Change password here!</h1>
        <input
          name="passwordOne"
          value={passwordOne}

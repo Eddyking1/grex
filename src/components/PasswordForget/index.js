@@ -1,81 +1,92 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { SignUpLink } from '../SignUp';
-import {GlobalStyle, FormStyle} from '../../styles/GlobalStyle';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { SignUpLink } from "../SignUp";
+import { GlobalStyle, FormStyle } from "../../styles/GlobalStyle";
+import styled from "styled-components";
 
+import { withFirebase } from "../Firebase";
+import * as ROUTES from "../../constants/routes";
 
-import { withFirebase } from '../Firebase';
-import * as ROUTES from '../../constants/routes';
+const PwForgetButton = styled.div`
+  button {
+    padding: 1.3em 1.3em; 
+    font-size: 1.5em;
+  }
+`;
 
 const PasswordForgetPage = () => (
- <div>
-   <PasswordForgetForm />
- </div>
+  <div>
+    <PasswordForgetForm />
+  </div>
 );
 
 const INITIAL_STATE = {
- email: '',
- error: null,
+  email: "",
+  error: null
 };
 
 class PasswordForgetFormBase extends Component {
- constructor(props) {
-   super(props);
+  constructor(props) {
+    super(props);
 
-   this.state = { ...INITIAL_STATE };
- }
+    this.state = { ...INITIAL_STATE };
+  }
 
- onSubmit = event => {
-   const { email } = this.state;
+  onSubmit = event => {
+    const { email } = this.state;
 
-   this.props.firebase
-     .doPasswordReset(email)
-     .then(() => {
-       this.setState({ ...INITIAL_STATE });
-     })
-     .catch(error => {
-       this.setState({ error });
-     });
+    this.props.firebase
+      .doPasswordReset(email)
+      .then(() => {
+        this.setState({ ...INITIAL_STATE });
+      })
+      .catch(error => {
+        this.setState({ error });
+      });
 
-   event.preventDefault();
- };
+    event.preventDefault();
+  };
 
- onChange = event => {
-   this.setState({ [event.target.name]: event.target.value });
- };
+  onChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
 
- render() {
-   const { email, error } = this.state;
+  render() {
+    const { email, error } = this.state;
 
-   const isInvalid = email === '';
+    const isInvalid = email === "";
 
-   return (
-     <FormStyle>
-     <form onSubmit={this.onSubmit}>
-     <h1>Forgot password?</h1>
-       <input
-         name="email"
-         value={this.state.email}
-         onChange={this.onChange}
-         type="text"
-         placeholder="Email Address"
-       />
-       <button disabled={isInvalid} type="submit">
-         Reset My Password
-       </button>
-       {error && <p>{error.message}</p>}
-       <SignUpLink />
-
-     </form>
-     </FormStyle>
-   );
- }
+    return (
+      <FormStyle>
+        <form onSubmit={this.onSubmit}>
+          <h1>Forgot password?</h1>
+          <input
+            name="email"
+            value={this.state.email}
+            onChange={this.onChange}
+            type="text"
+            placeholder="Email Address"
+          />
+          <PwForgetButton>
+            <button disabled={isInvalid} type="submit">
+              Reset My Password
+            </button>
+          </PwForgetButton>
+          {error && <p>{error.message}</p>}
+          <SignUpLink />
+        </form>
+      </FormStyle>
+    );
+  }
 }
 
 const PasswordForgetLink = () => (
- <p>
-   <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
- </p>
+  <p>
+    <Link to={ROUTES.PASSWORD_FORGET}>
+      {" "}
+      <span> Forgot Password? </span>
+    </Link>
+  </p>
 );
 
 export default PasswordForgetPage;

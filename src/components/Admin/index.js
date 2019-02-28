@@ -114,7 +114,7 @@ const UserList = ({ users }) => (
    </Players>
     {users.map(user => (
       <AdminText >
-        <p key={user.uid}>
+        <li key={user.uid}> 
 
           <p>
             <strong>Username:</strong> {user.username}
@@ -126,8 +126,7 @@ const UserList = ({ users }) => (
           <p>
             <strong>Distance traveled:</strong> {user.traveled ? user.traveled : "0"} <strong>Meters</strong>
           </p>
-
-        </p>
+      </li>
       </AdminText>
     ))}
   </div>

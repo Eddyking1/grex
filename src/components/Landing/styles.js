@@ -77,6 +77,11 @@ export const LearnMoreInfo = styled.div `
   align-items:center;
   justify-content:flex-start;
   justify-items:center;
-
+  padding: 3em 2em;
+  h2{
+    font-weight:bold;
+    font-size:2.5em;
+    
+  }
 
 `;
