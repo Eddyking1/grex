@@ -25,7 +25,26 @@ export const Wrapper = styled.div`
     transition: .4s;
     cursor: pointer;
   }
+
+  span {
+    color:black !important;
+  }
+
+  .Game-popup .leaflet-popup-content-wrapper {
+    border-radius:0px;
+    background-color:var(--nav-text-color);
+
+  }
+
 `;
+
+export const popupContent = {
+  background: "var(--nav-text-color)",
+  color:"black",
+  textAlign: "center",
+  height: "auto",
+
+};
 
 export const GameMap = styled(Map)`
   height: 100%;
