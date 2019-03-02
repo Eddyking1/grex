@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {TileLayer, Marker, Popup } from "react-leaflet";
 import { withFirebase } from "../Firebase";
 import { userContext } from "../Session";
-import {GameMap, Wrapper} from "./styles";
+import {GameMap, Wrapper, popupContent} from "./styles";
 import {SignUpIcon} from "../../styles/Icons";
 import MessagesBase from '../Chat';
 import L from 'leaflet';
@@ -241,15 +241,15 @@ class Game extends Component {
    const playerIcon = L.icon({
     iconUrl: require("../../assets/player.png"),
     iconSize: [60, 70],
-    iconAnchor: [15, 64],
-    popupAnchor: [0, -65]
+    iconAnchor: [20, 64],
+    popupAnchor: [10, -65]
   });
 
   const playersIcon = L.icon({
    iconUrl: require("../../assets/players.png"),
    iconSize: [60, 70],
-   iconAnchor: [15, 64],
-   popupAnchor: [0, -65]
+   iconAnchor: [20, 64],
+   popupAnchor: [10, -65]
  });
 
     return (
@@ -268,25 +268,32 @@ class Game extends Component {
           />
           {this.state.targetLocation ?
           <Marker position={Object.values(this.state.targetLocation)}>
-            <Popup>
+            <Popup className="Game-popup">
+            <div style={popupContent}>
               <span> Eggs target Location </span>
+              </div>
             </Popup>
           </Marker> : null}
           <Marker position={Object.values(this.state.dbCoords)} icon={playerIcon}>
-            <Popup>
+            <Popup className="Game-popup">
+            <div style={popupContent}>
               <span> Me </span>
+              </div>
             </Popup>
           </Marker>
           {markers.map((marker, index) => (
             <Marker key={index} position={Object.values(marker.position)} icon={playersIcon}>
-              <Popup>
+              <Popup className="Game-popup">
+              <div style={popupContent}>
                 {marker.username}
+                </div>
               </Popup>
             </Marker>
           ))}
           {this.state.eggs.map((marker, index,) => (
             <Marker key={index} position={Object.values(marker.position)} icon={eggIcon}>
-              <Popup>
+              <Popup className="Game-popup">
+              <div style={popupContent}> 
                 <span>Points: {marker.points} <br/> Target Location: {Object.values(marker.targetLocation)}</span>
                 <button
                   type="button"
@@ -294,6 +301,7 @@ class Game extends Component {
                   >
                   Show target Location
                 </button>
+                </div>
               </Popup>
             </Marker>
           ))}
