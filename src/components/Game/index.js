@@ -175,7 +175,6 @@ class Game extends Component {
   };
 
   componentDidMount() {
-
       this.props.firebase.user(this.props.user.uid).update({
         online: true,
       });
@@ -272,11 +271,6 @@ class Game extends Component {
           />
           {this.state.targetLocation ?
           <Marker position={Object.values(this.state.targetLocation)} icon={targetIcon}>
-            <Popup className="Game-popup">
-              <PopupContent>
-                <span> Target Location </span>
-              </PopupContent>
-            </Popup>
           </Marker> : null}
           <Marker position={Object.values(this.state.dbCoords)} icon={playerIcon}>
             <Popup className="Game-popup">
