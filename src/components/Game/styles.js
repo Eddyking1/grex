@@ -26,25 +26,23 @@ export const Wrapper = styled.div`
     cursor: pointer;
   }
 
-  span {
-    color:black !important;
-  }
-
   .Game-popup .leaflet-popup-content-wrapper {
     border-radius:0px;
     background-color:var(--nav-text-color);
 
   }
-
 `;
 
-export const popupContent = {
-  background: "var(--nav-text-color)",
-  color:"black",
-  textAlign: "center",
-  height: "auto",
+export const PopupContent =  styled.div`
+  background: var(--nav-text-color);
+  text-align: center;
 
-};
+  span {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+  }
+`;
 
 export const GameMap = styled(Map)`
   height: 100%;

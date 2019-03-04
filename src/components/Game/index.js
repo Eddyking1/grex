@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {TileLayer, Marker, Popup } from "react-leaflet";
 import { withFirebase } from "../Firebase";
 import { userContext } from "../Session";
-import {GameMap, Wrapper, popupContent} from "./styles";
+import {GameMap, Wrapper, PopupContent} from "./styles";
 import {SignUpIcon} from "../../styles/Icons";
 import MessagesBase from '../Chat';
 import L from 'leaflet';
@@ -21,12 +21,11 @@ class Game extends Component {
       users: null,
       eggs: null,
       targetLocation: null,
+      selectedEgg: null,
     };
   }
 
   calculateDistance = (lat1, lon1, lat2, lon2) => {
-    console.log("calculateDistance");
-
     var R = 6371;
     var dLat = ((lat2 - lat1) * Math.PI) / 180;
     var dLon = ((lon2 - lon1) * Math.PI) / 180;
@@ -42,8 +41,6 @@ class Game extends Component {
   };
 
   loadUsersFromDB = () => {
-    console.log("loadUsersFromDB");
-
     this.props.firebase.users().on('value', snapshot => {
       const usersObject = snapshot.val();
 
@@ -61,7 +58,6 @@ class Game extends Component {
   }
 
   loadEggsFromDB = () => {
-
     this.props.firebase
       .eggs()
       .on('value', snapshot => {
@@ -72,18 +68,15 @@ class Game extends Component {
           const eggsList = Object.keys(eggsObject).map(key => ({
             ...eggsObject[key],
             uid: key,
-
           }));
 
           this.setState({
             eggs: eggsList,
           });
-          console.log("STATE", Object.keys(this.state.eggs).length);
           this.spawnEggs();
 
 
         } else {
-          console.log("ELSE");
           this.addEggToDB();
         }
       });
@@ -173,7 +166,6 @@ class Game extends Component {
   };
 
   writeUserPositionToDB = position => {
-    console.log("writeUserPositionToDB");
 
     const { latitude, longitude } = position;
     this.props.firebase
@@ -183,16 +175,14 @@ class Game extends Component {
   };
 
   componentDidMount() {
-    console.log("componentDidMount");
 
-        this.props.firebase.user(this.props.user.uid).update({
-          online: true,
-        });
+      this.props.firebase.user(this.props.user.uid).update({
+        online: true,
+      });
 
       this.getUserPositionFromDB();
       this.loadUsersFromDB();
       this.loadEggsFromDB();
-
 
       this.watchId = navigator.geolocation.watchPosition(
        this.updatePosition,
@@ -206,22 +196,29 @@ class Game extends Component {
           distanceFilter: 1
         }
       );
-
     }
 
   componentWillUnmount() {
-    console.log("componentWillUnmount");
     navigator.geolocation.clearWatch(this.watchId);
       this.props.firebase.user(this.props.user.uid).update({
         online: false,
         lastSeen: this.props.firebase.serverValue.TIMESTAMP,
       });
-
   }
 
   showTarget = (target) => {
     this.setState({targetLocation: target});
   };
+
+  getSelectedEggChat = (selectedEgg) => {
+    this.setState({selectedEgg: selectedEgg});
+  };
+
+  resetEgg = (target, selectEgg) => {
+    this.setState({targetLocation: null, selectedEgg: null, });
+    this.showTarget(target);
+    this.getSelectedEggChat(selectEgg);
+  }
 
   render() {
     const markers = [];
@@ -231,14 +228,14 @@ class Game extends Component {
       markers.push(...positions)
     }
 
-    const eggIcon = L.icon({
-     iconUrl: require("../../assets/ball-spotted.png"),
-     iconSize: [30, 40],
-     iconAnchor: [15, 64],
-     popupAnchor: [0, -65]
-   });
+  const eggIcon = L.icon({
+    iconUrl: require("../../assets/ball-spotted.png"),
+    iconSize: [30, 60],
+    iconAnchor: [15, 64],
+    popupAnchor: [0, -65]
+  });
 
-   const playerIcon = L.icon({
+  const playerIcon = L.icon({
     iconUrl: require("../../assets/player.png"),
     iconSize: [60, 70],
     iconAnchor: [20, 64],
@@ -252,9 +249,16 @@ class Game extends Component {
    popupAnchor: [10, -65]
  });
 
+ const targetIcon = L.icon({
+   iconUrl: require("../../assets/target.png"),
+   iconSize: [50, 60],
+   iconAnchor: [20, 64],
+   popupAnchor: [10, -65]
+ })
+
     return (
       <div>
-      { this.state.eggs ?
+      { this.state.eggs && this.state.users ?
       <Wrapper>
         {this.state.dbCoords ?
         <GameMap center={Object.values(this.state.dbCoords)}
@@ -267,51 +271,45 @@ class Game extends Component {
           <TileLayer url={mapUrl}
           />
           {this.state.targetLocation ?
-          <Marker position={Object.values(this.state.targetLocation)}>
+          <Marker position={Object.values(this.state.targetLocation)} icon={targetIcon}>
             <Popup className="Game-popup">
-            <div style={popupContent}>
-              <span> Eggs target Location </span>
-              </div>
+              <PopupContent>
+                <span> Target Location </span>
+              </PopupContent>
             </Popup>
           </Marker> : null}
           <Marker position={Object.values(this.state.dbCoords)} icon={playerIcon}>
             <Popup className="Game-popup">
-            <div style={popupContent}>
-              <span> Me </span>
-              </div>
+              <PopupContent>
+                <span> Me </span>
+              </PopupContent>
             </Popup>
           </Marker>
           {markers.map((marker, index) => (
             <Marker key={index} position={Object.values(marker.position)} icon={playersIcon}>
               <Popup className="Game-popup">
-              <div style={popupContent}>
-                {marker.username}
-                </div>
+                <PopupContent>
+                <span>{marker.username}</span>
+                </PopupContent>
               </Popup>
             </Marker>
           ))}
           {this.state.eggs.map((marker, index,) => (
-            <Marker key={index} position={Object.values(marker.position)} icon={eggIcon}>
+            <Marker onClick={() => this.resetEgg(marker.targetLocation, marker.uid)} key={index} position={Object.values(marker.position)} icon={eggIcon}>
               <Popup className="Game-popup">
-              <div style={popupContent}> 
-                <span>Points: {marker.points} <br/> Target Location: {Object.values(marker.targetLocation)}</span>
-                <button
-                  type="button"
-                  onClick={() => this.showTarget(marker.targetLocation)}
-                  >
-                  Show target Location
-                </button>
-                </div>
+              <PopupContent>
+                <span>Points: {marker.points}</span>
+                </PopupContent>
               </Popup>
             </Marker>
           ))}
         </GameMap> : <div></div>}
       </Wrapper>
     : null }
-      <Wrapper>
-        {this.props.user && this.state.users ?
-        <MessagesBase users={this.props.users} authUser={this.props.user.uid} firebase={this.props.firebase} /> : <div></div>}
-      </Wrapper>
+        {this.props.user && this.state.users && this.state.selectedEgg ?
+        <Wrapper>
+          <MessagesBase eggId={this.state.selectedEgg} users={this.props.users} authUser={this.props.user.uid} firebase={this.props.firebase} />
+        </Wrapper>: <div></div>}
       </div>
           );
       };
