@@ -25,8 +25,6 @@ class Game extends Component {
   }
 
   calculateDistance = (lat1, lon1, lat2, lon2) => {
-    console.log("calculateDistance");
-
     var R = 6371;
     var dLat = ((lat2 - lat1) * Math.PI) / 180;
     var dLon = ((lon2 - lon1) * Math.PI) / 180;
@@ -42,8 +40,6 @@ class Game extends Component {
   };
 
   loadUsersFromDB = () => {
-    console.log("loadUsersFromDB");
-
     this.props.firebase.users().on('value', snapshot => {
       const usersObject = snapshot.val();
 
@@ -61,7 +57,6 @@ class Game extends Component {
   }
 
   loadEggsFromDB = () => {
-
     this.props.firebase
       .eggs()
       .on('value', snapshot => {
@@ -72,18 +67,15 @@ class Game extends Component {
           const eggsList = Object.keys(eggsObject).map(key => ({
             ...eggsObject[key],
             uid: key,
-
           }));
 
           this.setState({
             eggs: eggsList,
           });
-          console.log("STATE", Object.keys(this.state.eggs).length);
           this.spawnEggs();
 
 
         } else {
-          console.log("ELSE");
           this.addEggToDB();
         }
       });
@@ -185,9 +177,9 @@ class Game extends Component {
   componentDidMount() {
     console.log("componentDidMount");
 
-        this.props.firebase.user(this.props.user.uid).update({
-          online: true,
-        });
+      this.props.firebase.user(this.props.user.uid).update({
+        online: true,
+      });
 
       this.getUserPositionFromDB();
       this.loadUsersFromDB();
@@ -206,7 +198,6 @@ class Game extends Component {
           distanceFilter: 1
         }
       );
-
     }
 
   componentWillUnmount() {
@@ -216,7 +207,6 @@ class Game extends Component {
         online: false,
         lastSeen: this.props.firebase.serverValue.TIMESTAMP,
       });
-
   }
 
   showTarget = (target) => {
@@ -231,14 +221,14 @@ class Game extends Component {
       markers.push(...positions)
     }
 
-    const eggIcon = L.icon({
-     iconUrl: require("../../assets/ball-spotted.png"),
-     iconSize: [30, 40],
-     iconAnchor: [15, 64],
-     popupAnchor: [0, -65]
-   });
+  const eggIcon = L.icon({
+    iconUrl: require("../../assets/ball-spotted.png"),
+    iconSize: [30, 40],
+    iconAnchor: [15, 64],
+    popupAnchor: [0, -65]
+  });
 
-   const playerIcon = L.icon({
+  const playerIcon = L.icon({
     iconUrl: require("../../assets/player.png"),
     iconSize: [60, 70],
     iconAnchor: [20, 64],
@@ -293,7 +283,7 @@ class Game extends Component {
           {this.state.eggs.map((marker, index,) => (
             <Marker key={index} position={Object.values(marker.position)} icon={eggIcon}>
               <Popup className="Game-popup">
-              <div style={popupContent}> 
+              <div style={popupContent}>
                 <span>Points: {marker.points} <br/> Target Location: {Object.values(marker.targetLocation)}</span>
                 <button
                   type="button"
