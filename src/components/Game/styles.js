@@ -29,7 +29,6 @@ export const Wrapper = styled.div`
   .Game-popup .leaflet-popup-content-wrapper {
     border-radius:0px;
     background-color:var(--nav-text-color);
-
   }
 `;
 
