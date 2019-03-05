@@ -26,10 +26,32 @@ export const Wrapper = styled.div`
     cursor: pointer;
   }
 
+
   .Game-popup .leaflet-popup-content-wrapper {
     border-radius:0px;
     background-color:var(--nav-text-color);
   }
+  .Game-popup .leaflet-popup-close-button {
+    display:none;
+  }
+
+  .leaflet-touch .leaflet-bar {
+    background: var(--menu-color);
+   a{
+     padding:20px 10px;
+     font-size:4em;
+      width:50px;
+      height:70px;
+      color: var(--nav-text-color);
+      background: var(--menu-color);
+    }
+    
+  }
+`;
+
+export const ChatArea = styled.div`
+ padding:60px 0;
+
 `;
 
 export const PopupContent =  styled.div`

@@ -68,11 +68,7 @@ class MessagesBase extends Component {
     return (
           <Chat>
             <h2>Egg Chat</h2>
-            {!loading && messages && (
-              <button type="button" onClick={this.onNextPage}>
-                More
-              </button>
-            )}
+       
 
             {loading && <div>Loading ...</div>}
 
@@ -98,6 +94,7 @@ class MessagesBase extends Component {
             >
               <input
                 type="text"
+                placeholder="Write here!"
                 value={text}
                 onChange={this.onChangeText}
               />
@@ -134,8 +131,8 @@ class MessageItem extends Component {
           <span>
             <strong>
               {message.user.username || message.user.userId}
-            </strong>{' '}
-            {message.text}
+            </strong>{': '}
+            {message.text} 
           </span>
       </li>
     );

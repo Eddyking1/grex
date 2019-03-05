@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {TileLayer, Marker, Popup } from "react-leaflet";
 import { withFirebase } from "../Firebase";
 import { userContext } from "../Session";
-import {GameMap, Wrapper, PopupContent} from "./styles";
+import {GameMap, Wrapper, PopupContent, ChatArea} from "./styles";
 import {SignUpIcon} from "../../styles/Icons";
 import MessagesBase from '../Chat';
 import L from 'leaflet';
@@ -301,9 +301,9 @@ class Game extends Component {
       </Wrapper>
     : null }
         {this.props.user && this.state.users && this.state.selectedEgg ?
-        <Wrapper>
+        <ChatArea>
           <MessagesBase eggId={this.state.selectedEgg} users={this.props.users} authUser={this.props.user.uid} firebase={this.props.firebase} />
-        </Wrapper>: <div></div>}
+        </ChatArea>: <div></div>}
       </div>
           );
       };
