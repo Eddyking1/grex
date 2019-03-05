@@ -84,8 +84,6 @@ class MessagesBase extends Component {
                     ? users[message.userId]
                     : { userId: message.userId },
                 }))}
-                onEditMessage={this.onEditMessage}
-                onRemoveMessage={this.onRemoveMessage}
               />
             )}
 

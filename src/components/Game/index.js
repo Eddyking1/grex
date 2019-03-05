@@ -25,9 +25,8 @@ class Game extends Component {
       eggs: null,
       targetLocation: null,
       selectedEgg: null,
-      hasEgg: null,
-      pickedUpEgg: null,
-      droppedEgg: null,
+      pickedUp: false,
+      pickUpEnabled: false,
     };
   }
 
@@ -157,68 +156,12 @@ calcEggs = () =>{
     const { latitude: lat1, longitude: lng1 } = egg.position;
     const { latitude: lat2, longitude: lng2 } = this.state.dbCoords;
     const dist = this.calculateDistance(lat1, lng1, lat2, lng2);
-    if (dist < 250 && !this.state.hasEgg) {
-      alert("you picked up an egg");
-      // this.pickUpEgg(egg, this.props.authUser.uid);
+    if (dist < 500 && !this.state.pickedUp) {
+      this.setState({pickUpEnabled: true});
     }
-      return({egg: egg, distance: dist});
   });
   this.setState({ eggDistances });
 }
-
-  // pickUpEgg = (egg, userId) => {
-  //   this.setState({
-  //     hasEgg: true,
-  //     pickedUpEgg: {
-  //       targetLocation: egg.targetLocation,
-  //       position: this.state.dbCoords,
-  //       points: egg.points,
-  //       createdAt: egg.createdAt,
-  //       pickUpAt: this.props.firebase.serverValue.TIMESTAMP,
-  //       uid: egg.uid,
-  //     },
-  //   });
-  //   this.props.firebase.user(userId).update({
-  //     hasEgg: true,
-  //     egg: this.state.pickedUpEgg,
-  //   })
-  //   this.removeEgg(egg.uid);
-  // }
-
-  // removeEgg = (eggId) => {
-  //   this.props.firebase.egg(eggId).remove();
-  // }
-
-  // dropEgg = () => {
-  //   this.props.firebase
-  //   .user(this.props.authUser.uid)
-  //   .child("egg")
-  //   .once("value", snapshot => {
-  //     const egg = snapshot.val();
-  //     this.setState({ droppedEgg: {
-  //       pickUpAt: null,
-  //       position: this.state.dbCoords,
-  //       targetLocation: egg.targetLocation,
-  //       createdAt: egg.createdAt,
-  //       points: egg.points,
-  //       uid: egg.uid,
-  //       droppedAt: this.props.firebase.serverValue.TIMESTAMP,
-  //     }});
-  //   });
-    // this.renderDroppedEgg();
-  // }
-
-  // renderDroppedEgg = () => {
-  //   this.props.firebase.user(this.props.authUser.uid).update({
-  //     egg: null,
-  //     hasEgg: null,
-  //   });
-  //   this.setState({hasEgg: false});
-  //   console.log("pickedup",this.state.pickedUpEgg);
-  //   console.log("dropped",this.state.droppedEgg);
-  //
-  //   this.props.firebase.eggs().push(this.state.droppedEgg);
-  // }
 
   updatePosition = position => {
     this.setState({
@@ -237,6 +180,16 @@ calcEggs = () =>{
         this.calcEggs();
       }
     }
+  };
+
+  pickUpEgg = () => {
+    console.log("Pick Up EGG");
+    this.setState({pickedUp: true, pickUpEnabled: false});
+  };
+
+  dropEgg = () =>  {
+    console.log("Drop Egg");
+    this.setState({pickedUp: false});
   };
 
   writeUserPositionToDB = position => {
@@ -350,6 +303,8 @@ calcEggs = () =>{
             <Popup className="Game-popup">
               <PopupContent>
                 <span> Me </span>
+                {this.state.pickUpEnabled ? <button onClick={() => this.pickUpEgg()}>Pick Up</button> : null}
+                {this.state.pickedUp ? <button onClick={() => this.dropEgg()}>Drop Egg</button> : null}
               </PopupContent>
             </Popup>
           </Marker>
