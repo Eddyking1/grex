@@ -1,55 +1,69 @@
-import React, { Component } from 'react';
-import GlobalStyle from '../../styles/GlobalStyle';
+import React, { Component } from "react";
+import GlobalStyle from "../../styles/GlobalStyle";
 
-import { withFirebase } from '../Firebase';
-import { withAuthorization } from '../Session';
-import styled from 'styled-components';
-
-
-
+import { withFirebase } from "../Firebase";
+import { withAuthorization } from "../Session";
+import styled from "styled-components";
 
 const AdminStyle = styled.div`
   overflow: none;
-  display:flex;
-  justify-content:center;
-  text-aling:center;
-  padding:20px;
-  background: hsl(225, 70%, 5%);
-  height:100vh;  
+  display: flex;
+  justify-content: center;
+  text-aling: center;
+  padding: 20px;
+  background: var(--menu-color);
+  height: 100vh;
 `;
 
 const AdminText = styled.div`
-  display:flex;
-  width:60vw;
-  padding:10px;
-  border: 2px solid;
-  flex-direction:column;
+  display: flex;
+  width: 80vw;
+  margin:15px;
+  padding: 10px;
+  border: 1px solid;
+  border-radius:15px 5px 30px ;
+  color: var(--nav-text-color);
+  flex-direction: row;
+
+  img {
+    display: flex;
+    margin: 10px;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: auto;
+  }
 `;
 
 const Players = styled.div`
-  display:flex;
-  flex-direction:row;
-
+  display: flex;
+  flex-direction: column;
+  width:80%;
+  margin:10px;
+  padding:10px 0px;
+  background-color:var(--nav-text-color);
+  color: white;
+  border: 1px solid var(--nav-text-color);
+  border-radius:20px ;
   p {
-    display:flex;
-    justify-content:flex-end;
-    margin:0 auto;
+    text-align:center;
+  
   }
 `;
 
 const Head = styled.div`
-  display:flex;
-  flex-direction:row;
-  padding-bottom:10px;
-  h1 {
-    justify-content:center;
-    margin:0 auto;
-    text-decoration:underline;
-  }
+  display: flex;
+  flex-direction:column;
+    align-content: center;
+    justify-items:center;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+  color: var(--nav-text-color);
+  padding-bottom: 10px;
+
 `;
-
-
-
 
 class AdminPage extends Component {
   constructor(props) {
@@ -57,29 +71,24 @@ class AdminPage extends Component {
 
     this.state = {
       loading: false,
-      users: [],
+      users: []
     };
   }
-
-
-
 
   componentDidMount() {
     this.setState({ loading: true });
 
-    this.props.firebase.users().on('value', snapshot => {
+    this.props.firebase.users().on("value", snapshot => {
       const usersObject = snapshot.val();
 
       const usersList = Object.keys(usersObject).map(key => ({
         ...usersObject[key],
-        uid: key,
+        uid: key
       }));
-
-
 
       this.setState({
         users: usersList,
-        loading: false,
+        loading: false
       });
     });
   }
@@ -91,8 +100,6 @@ class AdminPage extends Component {
   render() {
     const { users, loading } = this.state;
 
-
-
     return (
       <AdminStyle>
         {loading && <div>Loading ...</div>}
@@ -102,31 +109,33 @@ class AdminPage extends Component {
   }
 }
 
-
 const UserList = ({ users }) => (
   <div>
-  <Head>
+    <Head>
       <h1>Leaderboard</h1>
-</Head>
-    <Players> 
-    <p>Total players: {users.length}</p>
-     <p>Players online: {users.online ? users.online : "0"}</p>
-   </Players>
+    <Players>
+      <p>Total players: {users.length}</p>
+      </Players>
+     <Players>
+      <p>Players online: {users.online ? users.online : "0"}</p>
+    </Players>
+  </Head>
     {users.map(user => (
-      <AdminText >
-        <li key={user.uid}> 
-
+      <AdminText>
+        <img src={require("../../assets/player.png")} />
+        <div key={user.uid}>
           <p>
             <strong>Username:</strong> {user.username}
           </p>
           <p>
-            <strong>Highscore:</strong> {user.highscore ? user.highscore : "0" }
+            <strong>Highscore:</strong> {user.highscore ? user.highscore : "0"}
           </p>
 
           <p>
-            <strong>Distance traveled:</strong> {user.traveled ? user.traveled : "0"} <strong>Meters</strong>
+            <strong>Distance:</strong> {user.traveled ? user.traveled : "0"}{" "}
+            <strong> M </strong>
           </p>
-      </li>
+        </div>
       </AdminText>
     ))}
   </div>

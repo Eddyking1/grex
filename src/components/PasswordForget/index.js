@@ -60,6 +60,7 @@ class PasswordForgetFormBase extends Component {
       <FormStyle>
         <form onSubmit={this.onSubmit}>
           <h1>Forgot password?</h1>
+          <h2>This sends you an e-mail verification</h2>
           <input
             name="email"
             value={this.state.email}
