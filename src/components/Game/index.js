@@ -84,6 +84,12 @@ class Game extends Component {
         }
       });
   }
+updateEggInDB = (uid) => {
+  const userID = this.props.authUser.uid;
+  this.props.firebase
+    .egg(uid).update({ pickedUpBy: userID });
+  this.props.firebase.user(userID).update({ hasEggID: uid});
+}
 
   spawnEggs = () => {
     console.log(Object.keys(this.state.eggs).length);
@@ -102,6 +108,7 @@ class Game extends Component {
       targetLocation: {latitude: targetX, longitude: targetY},
       position: {latitude: positionX, longitude: positonY},
       points: this.setPoints(targetX, positionX, targetY ,positonY),
+      isPickedUpBy: false,
       createdAt: this.props.firebase.serverValue.TIMESTAMP
     })
   }
@@ -150,18 +157,6 @@ class Game extends Component {
     });
   };
 
-calcEggs = () =>{
-  const eggDistances = this.state.eggs.map(egg => {
-
-    const { latitude: lat1, longitude: lng1 } = egg.position;
-    const { latitude: lat2, longitude: lng2 } = this.state.dbCoords;
-    const dist = this.calculateDistance(lat1, lng1, lat2, lng2);
-    if (dist < 500 && !this.state.pickedUp) {
-      this.setState({pickUpEnabled: true});
-    }
-  });
-  this.setState({ eggDistances });
-}
 
   updatePosition = position => {
     this.setState({
@@ -182,10 +177,22 @@ calcEggs = () =>{
     }
   };
 
-  pickUpEgg = () => {
-    console.log("Pick Up EGG");
-    this.setState({pickedUp: true, pickUpEnabled: false});
-  };
+  calcEggs = () =>{
+    const eggDistances = this.state.eggs.map(egg => {
+
+      const { latitude: lat1, longitude: lng1 } = egg.position;
+      const { latitude: lat2, longitude: lng2 } = this.state.dbCoords;
+      const dist = this.calculateDistance(lat1, lng1, lat2, lng2);
+      //if (dist < 500 && !this.state.pickedUp) {
+      egg.pickUpEnabled = (dist < 500 && !egg.pickedUpBy) ? true : false;
+      //egg.distance = dist;
+      return egg;
+      //}
+    });
+    this.setState({ eggDistances });
+  }
+
+
 
   dropEgg = () =>  {
     console.log("Drop Egg");
@@ -245,6 +252,9 @@ calcEggs = () =>{
       online: false,
       lastSeen: this.props.firebase.serverValue.TIMESTAMP,
     });
+    this.props.firebase
+      .eggs()
+      .off();
   }
 
   render() {
@@ -303,7 +313,7 @@ calcEggs = () =>{
             <Popup className="Game-popup">
               <PopupContent>
                 <span> Me </span>
-                {this.state.pickUpEnabled ? <button onClick={() => this.pickUpEgg()}>Pick Up</button> : null}
+
                 {this.state.pickedUp ? <button onClick={() => this.dropEgg()}>Drop Egg</button> : null}
               </PopupContent>
             </Popup>
@@ -312,19 +322,21 @@ calcEggs = () =>{
             <Marker onClick={() => this.resetValues()} key={index} position={Object.values(marker.position)} icon={playersIcon}>
               <Popup className="Game-popup">
                 <PopupContent>
-                <span>{marker.username}</span>
+                  <span>{marker.username}</span>
                 </PopupContent>
               </Popup>
             </Marker>
           ))}
           {this.state.eggs.map((marker, index,) => (
+            !marker.pickedUpBy ?
             <Marker onClick={() => this.resetEgg(marker.targetLocation, marker.uid)} key={index} position={Object.values(marker.position)} icon={eggIcon}>
               <Popup className="Game-popup">
-              <PopupContent>
-                <span>Points: {marker.points}</span>
+                <PopupContent>
+                  <span>Points: {marker.points}</span>
+                  {marker.pickUpEnabled ? <button onClick={() => this.updateEggInDB(marker.uid)}>Pick Up</button> : null}
                 </PopupContent>
               </Popup>
-            </Marker>
+            </Marker> : (marker.pickedUpBy === this.props.authUser.uid) ? <Marker position={Object.values(marker.targetLocation)} icon={targetIcon}></Marker> : null
           ))}
         </GameMap> : <div></div>}
       </Wrapper>
