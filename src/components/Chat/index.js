@@ -46,7 +46,7 @@ class MessagesBase extends Component {
   onCreateMessage = (event) => {
     this.props.firebase.egg(this.props.eggId).child('messages').push({
       text: this.state.text,
-      userId: this.props.authUser,
+      userId: this.props.userId,
       createdAt: this.props.firebase.serverValue.TIMESTAMP,
     });
 
@@ -84,8 +84,6 @@ class MessagesBase extends Component {
                     ? users[message.userId]
                     : { userId: message.userId },
                 }))}
-                onEditMessage={this.onEditMessage}
-                onRemoveMessage={this.onRemoveMessage}
               />
             )}
 

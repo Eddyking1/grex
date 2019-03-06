@@ -43,6 +43,7 @@ class Firebase {
 
   messages = () => this.db.ref("messages");
 
+  // *** Eggs API ***
 
   egg = uid => this.db.ref(`eggs/${uid}`);
 

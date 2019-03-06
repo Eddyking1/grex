@@ -42,6 +42,7 @@ class SignUpFormBase extends Component {
             email,
             position,
             online,
+            hasEggID: false
           });
       })
       .then(() => {
