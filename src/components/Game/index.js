@@ -8,7 +8,6 @@ import {
 } from '../Session';
 
 const mapUrl = 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png';
-const mapCenter = [59.32, 18.06];
 const zoomLevel = 11;
 
 class Game extends Component {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { SignUpLink } from "../SignUp";
-import { GlobalStyle, FormStyle } from "../../styles/GlobalStyle";
+import { FormStyle } from "../../styles/GlobalStyle";
 import styled from "styled-components";
 
 import { withFirebase } from "../Firebase";
@@ -9,7 +9,7 @@ import * as ROUTES from "../../constants/routes";
 
 const PwForgetButton = styled.div`
   button {
-    padding: 1.3em 1.3em; 
+    padding: 1.3em 1.3em;
     font-size: 1.5em;
   }
 `;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {GlobalStyle, FormStyle} from '../../styles/GlobalStyle';
+import {FormStyle} from '../../styles/GlobalStyle';
 
 
 import { withFirebase } from '../Firebase';
