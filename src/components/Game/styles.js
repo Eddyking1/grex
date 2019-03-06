@@ -38,10 +38,6 @@ export const Wrapper = styled.div`
   .leaflet-touch .leaflet-bar {
     background: var(--menu-color);
    a{
-     padding:20px 10px;
-     font-size:4em;
-      width:50px;
-      height:70px;
       color: var(--nav-text-color);
       background: var(--menu-color);
     }
@@ -50,7 +46,6 @@ export const Wrapper = styled.div`
 `;
 
 export const ChatArea = styled.div`
- padding:60px 0;
 
 `;
 

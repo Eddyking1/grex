@@ -48,26 +48,28 @@ export const Chat = styled.div`
   }
 
   h2 {
-    width:50%;
+  width:100%;
   margin:10px;
   padding:10px 0px;
   background-color:var(--nav-text-color);
   color: white;
   border: 1px solid var(--nav-text-color);
-  border-radius:20px ;
   text-align:center;
+
   }
 `;
 
 export const ChatList = styled.div`
   display:flex;
   color:var(--nav-text-color);
-  padding:30px;
   height:200px;
-  width:90%;
+  padding:10px;
+  min-width:70%;
+  max-width:90%;
   border:1px solid;
   flex-direction:column;
   overflow-y:scroll;
+  overflow-x:none;
   font-size:1.2em;
 
 
@@ -75,13 +77,18 @@ export const ChatList = styled.div`
    color:white;
    text-align:left;
  }
+ 
   li {
     text-align:left;
+    
     padding: 5px 0 5px;
 
     span {
       display:block;
       text-align:left;
+      overflow:none;
+      width:100%;
+      border-bottom:1px solid rgba(255, 255, 255, 0.5);
       color:var(--toolbar-color);
       &:hover {
         transform: scale(1);
