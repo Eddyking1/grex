@@ -10,8 +10,7 @@ import {
   withAuthorization,
 } from '../Session';
 
-const mapUrl =
-"https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png";
+const mapUrl = 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png';
 const mapCenter = [59.32, 18.06];
 const zoomLevel = 11;
 
@@ -66,6 +65,7 @@ class Game extends Component {
     this.props.firebase
       .eggs()
       .on('value', snapshot => {
+        console.log("firebase on ran: " + snapshot.val());
         const eggsObject = snapshot.val();
 
         if (eggsObject) {
@@ -77,25 +77,34 @@ class Game extends Component {
           this.setState({
             eggs: eggsList,
           }, () => {
+
               this.spawnEggs();
+
           });
         } else {
           this.addEggToDB();
         }
+
       });
   }
 updateEggInDB = (uid) => {
+  console.log("UEID ran" + uid);
   const userID = this.props.authUser.uid;
   this.props.firebase
     .egg(uid).update({ pickedUpBy: userID });
   this.props.firebase.user(userID).update({ hasEggID: uid});
+  this.loadEggsFromDB();
+  //this.calcEggs();
 }
 
   spawnEggs = () => {
     console.log(Object.keys(this.state.eggs).length);
-    if (Object.keys(this.state.eggs).length < 5 && !this.state.hasEgg) {
+    if (Object.keys(this.state.eggs).length < 5 ) {
       this.addEggToDB();
+    } else {
+      this.calcEggs();
     }
+
   }
 
   addEggToDB = () => {
@@ -172,7 +181,7 @@ updateEggInDB = (uid) => {
       const dist = this.calculateDistance(lat1, lng1, lat2, lng2);
       if (dist > 1) {
         this.writeUserPositionToDB(position.coords);
-        this.calcEggs();
+        //this.calcEggs();
       }
     }
   };
@@ -182,21 +191,38 @@ updateEggInDB = (uid) => {
 
       const { latitude: lat1, longitude: lng1 } = egg.position;
       const { latitude: lat2, longitude: lng2 } = this.state.dbCoords;
+      const { latitude: lat3, longitude: lng3 } = egg.targetLocation;
       const dist = this.calculateDistance(lat1, lng1, lat2, lng2);
+      const distToTarget = this.calculateDistance(lat1, lng1, lat3, lng3);
       //if (dist < 500 && !this.state.pickedUp) {
       egg.pickUpEnabled = (dist < 500 && !egg.pickedUpBy) ? true : false;
+      egg.hasArrived = (distToTarget < 30 && egg.pickedUpBy) ? true : false;
       //egg.distance = dist;
       return egg;
       //}
     });
-    this.setState({ eggDistances });
+    this.setState( { eggs: eggDistances  } );
+
   }
 
 
 
-  dropEgg = () =>  {
+  dropEgg = (hasArrived) =>  {
     console.log("Drop Egg");
-    this.setState({pickedUp: false});
+
+    const userID = this.props.authUser.uid;
+    const eggID = this.state.users.find(user => user.uid === userID).hasEggID;
+
+    this.props.firebase.user(userID).update({ hasEggID : false });
+    this.props.firebase.egg(eggID).update({ pickedUpBy: false, position: { ...this.state.dbCoords } });
+    if (hasArrived) {
+      const eggPoints = this.state.eggs.find(egg => egg.uid === eggID).points;
+      const prevUserPoints = this.state.users.find(user => user.uid === userID).points;
+      this.props.firebase.user(userID).update( { points: prevUserPoints + eggPoints } );
+      this.props.firebase.egg(eggID).remove();
+      this.resetValues();
+    }
+    //this.calcEggs();
   };
 
   writeUserPositionToDB = position => {
@@ -206,6 +232,10 @@ updateEggInDB = (uid) => {
       .user(this.props.authUser.uid)
       .update({ position: { latitude: latitude, longitude: longitude } });
     this.getUserPositionFromDB();
+    const user = this.state.users.find(user => user.uid === this.props.authUser.uid);
+    if (user.hasEggID) {
+      this.props.firebase.egg(user.hasEggID).update({ position: { ...this.state.browserCoords } });
+    }
   };
 
   componentDidMount() {
@@ -229,6 +259,7 @@ updateEggInDB = (uid) => {
           distanceFilter: 1
         }
       );
+
     }
 
   resetValues = () => {
@@ -239,6 +270,7 @@ updateEggInDB = (uid) => {
   }
 
   resetEgg = (target, selectEgg) => {
+    console.log("resetEgg: " + target + " , " + selectEgg)
     this.resetValues();
     this.setState(prevState => ({
       targetLocation: target,
@@ -293,6 +325,13 @@ updateEggInDB = (uid) => {
    popupAnchor: [10, -65]
  })
 
+ const pickedUpTargetIcon = L.icon({
+   iconUrl: require("../../assets/picked-up-target.png"),
+   iconSize: [50, 60],
+   iconAnchor: [20, 64],
+   popupAnchor: [10, -65]
+ })
+
     return (
       <div>
       { this.state.eggs && this.state.users ?
@@ -304,22 +343,26 @@ updateEggInDB = (uid) => {
              minZoom={9}
              scrollWheelZoom={false}
              markers={markers}
+
                       >
-          <TileLayer url={mapUrl}
+          <TileLayer url={mapUrl} attribution={'Map tiles by <a href=http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}
           />
           {this.state.targetLocation ?
-          <Marker position={Object.values(this.state.targetLocation)} icon={targetIcon}></Marker> : null}
-          <Marker onClick={() => this.resetValues()} position={Object.values(this.state.dbCoords)} icon={playerIcon}>
+          <Marker position={Object.values(this.state.targetLocation)} icon={targetIcon}>
+
+
+          </Marker> : null}
+          <Marker onClick={() => this.state.users.find(user => user.uid === this.props.authUser.uid).hasEggID ? this.resetEgg(this.state.eggs.find(egg => egg.pickedUpBy === this.props.authUser.uid).targetLocation, this.state.users.find(user => user.uid === this.props.authUser.uid).hasEggID) : this.resetValues() } position={Object.values(this.state.dbCoords)} icon={playerIcon}>
             <Popup className="Game-popup">
               <PopupContent>
                 <span> Me </span>
 
-                {this.state.pickedUp ? <button onClick={() => this.dropEgg()}>Drop Egg</button> : null}
+                {this.state.users.find(user => user.uid === this.props.authUser.uid).hasEggID ? <button onClick={() => this.dropEgg()}>Drop Egg</button> : null}
               </PopupContent>
             </Popup>
           </Marker>
           {markers.map((marker, index) => (
-            <Marker onClick={() => this.resetValues()} key={index} position={Object.values(marker.position)} icon={playersIcon}>
+            <Marker onClick={() => marker.hasEggID ? this.resetEgg(this.state.eggs.find(egg => egg.pickedUpBy === marker.uid).targetLocation, marker.hasEggID) : this.resetValues() } key={index} position={Object.values(marker.position)} icon={playersIcon}>
               <Popup className="Game-popup">
                 <PopupContent>
                   <span>{marker.username}</span>
@@ -334,9 +377,19 @@ updateEggInDB = (uid) => {
                 <PopupContent>
                   <span>Points: {marker.points}</span>
                   {marker.pickUpEnabled ? <button onClick={() => this.updateEggInDB(marker.uid)}>Pick Up</button> : null}
+
                 </PopupContent>
               </Popup>
-            </Marker> : (marker.pickedUpBy === this.props.authUser.uid) ? <Marker position={Object.values(marker.targetLocation)} icon={targetIcon}></Marker> : null
+            </Marker> : (marker.pickedUpBy === this.props.authUser.uid) ?
+            <Marker key={index} position={Object.values(marker.targetLocation)} icon={pickedUpTargetIcon}>
+              {(marker.hasArrived) ?
+              <Popup className="Game-popup">
+                <PopupContent>
+                  <button onClick={() => this.dropEgg(true)}>YOU DID IT DUDE/DUDETTE</button>
+                </PopupContent>
+              </Popup>
+               : null }
+            </Marker> : null
           ))}
         </GameMap> : <div></div>}
       </Wrapper>
