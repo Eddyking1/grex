@@ -39,8 +39,4 @@ export const AccPage = styled.div`
     height: 5vh;
   }
 
-  h1{
-    text-align:center;
-    padding:10px;
-  }
 `;
