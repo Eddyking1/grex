@@ -41,7 +41,7 @@ export const Wrapper = styled.div`
       color: var(--nav-text-color);
       background: var(--menu-color);
     }
-    
+
   }
 `;
 
@@ -52,11 +52,20 @@ export const ChatArea = styled.div`
 export const PopupContent =  styled.div`
   background: var(--nav-text-color);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
 
   span {
     font-size: 1.5em;
     font-weight: bold;
     color: white;
+  }
+
+  button {
+    width: 100%;
   }
 `;
 

@@ -48,7 +48,7 @@ const Players = styled.div`
   border-radius:20px ;
   p {
     text-align:center;
-  
+
   }
 `;
 
