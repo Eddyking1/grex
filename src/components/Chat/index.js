@@ -128,8 +128,8 @@ class MessageItem extends Component {
       <li>
           <span>
             <strong>
-              {message.user.username || message.user.userId}
-            </strong>{': '}
+              {message.user.username || message.user.userId} {' : '}
+            </strong>
             {message.text} 
           </span>
       </li>

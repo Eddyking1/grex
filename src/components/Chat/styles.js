@@ -74,14 +74,17 @@ export const ChatList = styled.div`
  strong {
    color:white;
    text-align:left;
-
  }
   li {
+    text-align:left;
+    padding: 5px 0 5px;
 
     span {
-      text-align:center;
+      display:block;
+      text-align:left;
+      color:var(--toolbar-color);
       &:hover {
-        transform: scale(1.1);
+        transform: scale(1);
       }
     }
   }
