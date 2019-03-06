@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import {TileLayer, Marker, Popup } from "react-leaflet";
-import { withFirebase } from "../Firebase";
-import { userContext } from "../Session";
-import {GameMap, Wrapper, PopupContent} from "./styles";
-import {SignUpIcon} from "../../styles/Icons";
+import {GameMap, Wrapper, PopupContent, ChatArea} from "./styles";
 import MessagesBase from '../Chat';
 import L from 'leaflet';
 import {
@@ -11,7 +8,6 @@ import {
 } from '../Session';
 
 const mapUrl = 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png';
-const mapCenter = [59.32, 18.06];
 const zoomLevel = 11;
 
 class Game extends Component {
@@ -394,10 +390,10 @@ updateEggInDB = (uid) => {
         </GameMap> : <div></div>}
       </Wrapper>
     : null }
-        {this.props.authUser && this.state.users && this.state.selectedEgg ?
-        <Wrapper>
+        {this.props.user && this.state.users && this.state.selectedEgg ?
+        <ChatArea>
           <MessagesBase eggId={this.state.selectedEgg} users={this.props.users} userId={this.props.authUser.uid} firebase={this.props.firebase} />
-        </Wrapper>: <div></div>}
+        </ChatArea>: <div></div>}
       </div>
           );
       };

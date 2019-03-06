@@ -6,7 +6,6 @@ const GlobalStyle = createGlobalStyle`
   :root {
     --menu-color: hsl(231, 74%, 11%);
     --nav-text-color: hsl(243, 100%, 69%);
-
     --search-field: hsl(220, 7%, 17%);
     --highlight-color: hsl(220, 7%, 27%);
     --toolbar-color: hsl(0, 0%, 98%);
@@ -25,6 +24,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     background: var(--menu-color);
     color: white;
+    overflow-x:hidden;
   }
 
   * {
@@ -44,8 +44,15 @@ const GlobalStyle = createGlobalStyle`
   }
 
   span {
-    color:var(--nav-text-color)
+    color:var(--nav-text-color);
+    display:inline-block;
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+     transform: scale(1.2);
+    }
   }
+  
 
 `;
 
@@ -55,10 +62,8 @@ const FormStyle = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: calc(80vh - 60px);
-  background-color: var(--menu-color);
+  min-height: calc(100vh - 60px);
   margin: 0;
-  padding: 1em 0.2em;
 
   form {
     display: flex;
@@ -81,6 +86,11 @@ const FormStyle = styled.div`
     padding: 1em;
     margin: 0.5em 0;
     outline: none;
+    transition: transform 0.3s ease-in-out;
+    
+  &:hover {
+    transform: scale(1.3);
+  }
   }
   
   input:-webkit-autofill,
@@ -96,6 +106,12 @@ select:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--nav-text-color);
   -webkit-box-shadow: 0 0 0px 1000px #000 inset;
   transition: background-color 5000s ease-in-out 0s;
+
+  transition: transform 0.3s ease-in-out;
+    
+    &:hover {
+      transform: scale(1.2);
+    }
 }
   input::placeholder {
     /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -119,6 +135,11 @@ select:-webkit-autofill:focus {
     font-size: 2em;
     font-weight: bold;
     border-radius: 0.1em;
+    transition: transform 0.3s ease-in-out;
+    
+    &:hover {
+      transform: scale(1.2);
+    }
   }
 
   h1 {

@@ -22,6 +22,11 @@ export const LandingPage = styled.div`
     font-size: 2em;
     font-weight: bold;
     border-radius: 0.1em;
+    transition: transform 0.3s ease-in-out;
+    
+    &:hover {
+      transform: scale(1.2);
+    }
 
     @media screen and (max-width:700px) {
     margin: 2em 0em;

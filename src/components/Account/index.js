@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { AuthUserContext, withAuthorization } from "../Session";
 import PasswordChangeForm from "../PasswordChange";
 
-
 const AccountPageStyles = styled.div`
   display: flex;
   align-content: center;
@@ -14,7 +13,19 @@ const AccountPageStyles = styled.div`
   min-height: calc(100vh - 60px);
   background-color: var(--menu-color);
   margin: 0;
-  padding: 1em 0.2em;
+  padding:0;
+
+`;
+
+const PageStyle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  margin:0;
+  padding:0;
+  position: relative;
 
   form {
     display: flex;
@@ -22,6 +33,8 @@ const AccountPageStyles = styled.div`
     align-items: center;
     align-content: center;
     flex-direction: column;
+    margin: 0 ;
+    padding: 0;
   }
   input {
     font-size: 1.5em;
@@ -35,7 +48,7 @@ const AccountPageStyles = styled.div`
     box-shadow: none;
     text-align: center;
     padding: 1em;
-    margin: 0.5em 0;
+    margin: 0 !important;
     outline: none;
   }
 
@@ -79,7 +92,7 @@ const AccountPageStyles = styled.div`
   }
 
   h1 {
-    height: 2em;
+    font-size: 2em;
     text-align: center;
   }
 
@@ -88,8 +101,21 @@ const AccountPageStyles = styled.div`
     text-align: center;
     font-size: 1.2em;
   }
+  img {
+    height: 200px;
+  }
 
   @media screen and (max-width: 600px) {
+    img {
+      height:120px;
+    }
+
+    h1 {
+      padding-top:30px;
+      font-size:1.5em;
+
+    }
+
   }
 `;
 
@@ -98,9 +124,12 @@ const AccountPage = () => (
     <AuthUserContext.Consumer>
       {authUser => (
         <div>
-          <h1>Account email: {authUser.email}</h1>
-          <h1>Account username: {authUser.username}</h1>
-
+          <PageStyle>
+            <img src={require("../../assets/player.png")} />
+            <h1>
+              Account email: {authUser.email}
+            </h1>
+          </PageStyle>
           <PasswordChangeForm />
         </div>
       )}

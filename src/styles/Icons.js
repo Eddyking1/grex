@@ -23,6 +23,11 @@ export const SignUpIcon = styled(UserPlus)`
   height: 5rem;
   width: 5rem;
   margin:1em;
+  transition: transform 1s ease-in-out;
+
+  &:hover {
+    transform: scale(1.2) rotate(360deg);
+  }
 `;
 
 export const LoginIcon = styled(DoorOpen)`
@@ -30,6 +35,11 @@ export const LoginIcon = styled(DoorOpen)`
   height: 5rem;
   width: 5rem;
   margin:1em;
+  transition: transform 0.3s ease-in-out;
+
+&:hover {
+  transform: scale(1.3) ;
+}
 `;
 
 export const LearnMore = styled(DownArrowSquare)`
@@ -37,4 +47,10 @@ export const LearnMore = styled(DownArrowSquare)`
   height: 3rem;
   width: 3rem;
   margin:0.5em;
+
+  transition: transform 0.3s ease-in-out;
+    
+    &:hover {
+  transform: scale(1.3) ;
+}
 `;

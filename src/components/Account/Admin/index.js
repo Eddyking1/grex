@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import GlobalStyle from "../../styles/GlobalStyle";
-
-import { withFirebase } from "../Firebase";
 import { withAuthorization } from "../Session";
 import styled from "styled-components";
 
@@ -18,13 +15,12 @@ const AdminStyle = styled.div`
 const AdminText = styled.div`
   display: flex;
   width: 80vw;
-  margin:15px;
+  margin: 15px;
   padding: 10px;
   border: 1px solid;
-  border-radius:15px 5px 30px ;
+  border-radius: 15px 5px 30px;
   color: var(--nav-text-color);
   flex-direction: row;
-
   img {
     display: flex;
     margin: 10px;
@@ -39,30 +35,28 @@ const AdminText = styled.div`
 const Players = styled.div`
   display: flex;
   flex-direction: column;
-  width:80%;
-  margin:10px;
-  padding:10px 0px;
-  background-color:var(--nav-text-color);
+  width: 80%;
+  margin: 10px;
+  padding: 10px 0px;
+  background-color: var(--nav-text-color);
   color: white;
   border: 1px solid var(--nav-text-color);
-  border-radius:20px ;
+  border-radius: 20px;
   p {
-    text-align:center;
-  
+    text-align: center;
   }
 `;
 
 const Head = styled.div`
   display: flex;
-  flex-direction:column;
-    align-content: center;
-    justify-items:center;
-    justify-content: center;
-    align-items: center;
-    text-align:center;
+  flex-direction: column;
+  align-content: center;
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   color: var(--nav-text-color);
   padding-bottom: 10px;
-
 `;
 
 class AdminPage extends Component {
@@ -113,16 +107,16 @@ const UserList = ({ users }) => (
   <div>
     <Head>
       <h1>Leaderboard</h1>
-    <Players>
-      <p>Total players: {users.length}</p>
+      <Players>
+        <p>Total players: {users.length}</p>
       </Players>
-     <Players>
-      <p>Players online: {users.online ? users.online : "0"}</p>
-    </Players>
-  </Head>
+      <Players>
+        <p>Players online: {users.online ? users.online : "0"}</p>
+      </Players>
+    </Head>
     {users.map(user => (
       <AdminText>
-        <img src={require("../../assets/player.png")} />
+        <img src={require("../../assets/player.png")} alt="picture of user" />
         <div key={user.uid}>
           <p>
             <strong>Username:</strong> {user.username}
