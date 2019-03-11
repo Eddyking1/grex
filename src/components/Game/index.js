@@ -70,8 +70,9 @@ class Game extends Component {
           this.setState({
             eggs: eggsList
           });
+        }
 
-        } if(this.state.eggs) {
+        if(this.state.eggs) {
           this.spawnEggs()
         } else {
           this.addEggToDB();
@@ -297,13 +298,6 @@ updateEggInDB = (uid) => {
    iconAnchor: [20, 64],
    popupAnchor: [10, -65]
  })
-
- // const pickedUpTargetIcon = L.icon({
- //   iconUrl: require("../../assets/picked-up-target.png"),
- //   iconSize: [50, 60],
- //   iconAnchor: [20, 64],
- //   popupAnchor: [10, -65]
- // })
 
     return (
       <div>
